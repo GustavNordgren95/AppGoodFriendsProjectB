@@ -1,3 +1,6 @@
+using DbRepos;
+using Services;
+
 namespace AppGoodFriendRazor
 {
     public class Program
@@ -8,6 +11,11 @@ namespace AppGoodFriendRazor
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+
+            builder.Services.AddScoped<csFriendsDbRepos>();
+            builder.Services.AddScoped<IFriendsService, csFriendsServiceDb>();
+            builder.Services.AddLogging();
+
 
             var app = builder.Build();
 

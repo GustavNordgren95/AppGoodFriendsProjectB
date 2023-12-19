@@ -1,10 +1,17 @@
 ﻿@page
-@model IndexModel
+@model AppGoodFriendRazor.Pages.IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container px-4 py-4" id="home">
+    <div class="bg-body-tertiary p-5 rounded">
+        <div class="col-sm-8 py-5 mx-auto">
+            <h1 class="display-5 fw-normal">AppGoodFriends Project B</h1>
+
+            <p>
+                <a class="btn btn-primary" href="https://appmusicwebapi.azurewebsites.net/swagger/index.html" role="button">Do you remember the WebApi?</a>
+            </p>
+        </div>
+    </div>
 </div>

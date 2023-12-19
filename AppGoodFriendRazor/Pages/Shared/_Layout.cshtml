@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AppGoodFriendRazor.styles.css" asp-append-version="true" />
+    <link href="~/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/bootstrap/navbars-offcanvas.css" rel="stylesheet">
+    <link href="~/css/bootstrap/features.css" rel="stylesheet">
+    <link href="~/css/bootstrap/grid.css" rel="stylesheet">
+    <link href="~/css/bootstrap/sign-in.css" rel="stylesheet">
+    <link href="~/css/bootstrap/modals.css" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -25,6 +31,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/ListOfFriends">Friend List</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -36,11 +45,26 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - AppGoodFriendRazor - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+            <div class="col-md-4 d-flex align-items-center">
+                <a href="~/index.html" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+                    <span class="mb-3 mb-md-0 text-body-secondary">&copy; 2023 Gustav Nordgren</span>
+                </a>
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+                @if (Configuration.csAppConfig.SecretMessage == "WebApi")
+                {
+                    <span class="mb-3 mb-md-0 text-body-secondary">Data source: @Configuration.csAppConfig.SecretMessage.</span>
+                }
+                else
+                {
+                    <span class="mb-3 mb-md-0 text-body-secondary">Data source: @Configuration.csAppConfig.DbLoginDetails("sysadmin").DbConnection</span>
+                }
+            </div>
+
+        </footer>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
