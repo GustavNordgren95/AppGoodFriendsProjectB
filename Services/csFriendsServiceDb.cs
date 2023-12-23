@@ -88,6 +88,8 @@ namespace Services
         public adminInfoDbDto RemoveSeed(loginUserSessionDto usr, bool seeded) => throw new NotImplementedException();
 
         public List<IFriend> ReadFriends(loginUserSessionDto usr, bool seeded, bool flat, string filter, int pageNumber, int pageSize) => throw new NotImplementedException();
+
+        
         #endregion
     }
 }

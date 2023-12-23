@@ -28,49 +28,33 @@ namespace AppGoodFriendRazor.Pages
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnGetAsync(string seeded = "true", string flat = "true",
-            string filter = null, string pageNr = "0", string pageSize = "5")
+        public int CurrentPage { get; set; } = 1; // Current page number
+        public int PageSize { get; set; } = 10;   // Number of items per page
+        public int TotalPages { get; set; }
+        public string CurrentFilter { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(string filter = "", int currentPage = 1, int pageSize = 10)
         {
+            CurrentPage = currentPage;
+            PageSize = pageSize;
+            CurrentFilter = filter;
 
-            var uri = Request.Path;
+            var info = await _friendsService.InfoAsync;
+            var totalFriendsCount = info.Db.nrSeededFriends; // Replace TotalFriendsCount with the actual property name that holds the count
 
-            bool _seeded = true;
-            if (!bool.TryParse(seeded, out _seeded))
+            TotalPages = (int)Math.Ceiling((double)totalFriendsCount / pageSize);
+            int adjustedPageNumber = CurrentPage - 1;
+
+            Friends = await _friendsService.ReadFriendsAsync(null, true, true, filter?.Trim()?.ToLower(), adjustedPageNumber, PageSize);
+
+            if (Friends == null || !Friends.Any())
             {
-                return BadRequest("seeded format error");
-            }
-
-            bool _flat = false;
-            if (!bool.TryParse(flat, out _flat))
-            {
-                return BadRequest("flat format error");
-            }
-
-            int _pageNr = 0;
-            if (!int.TryParse(pageNr, out _pageNr))
-            {
-                return BadRequest("pageNr format error");
-            }
-
-            int _pageSize = 0;
-            if (!int.TryParse(pageSize, out _pageSize))
-            {
-                return BadRequest("pageSize format error");
-            }
-
-            if (Friends == null)
-            {
-                _logger.LogError("Friends service returned null.");
+                _logger.LogWarning("No friends were found in the database for the current page.");
                 Friends = new List<IFriend>(); // Ensure Friends is never null
             }
-            else if (!Friends.Any())
-            {
-                _logger.LogWarning("No friends were found in the database.");
-            }
 
-            Friends = await _friendsService.ReadFriendsAsync(null, _seeded, _flat, filter?.Trim()?.ToLower(), _pageNr, _pageSize);
-            Addresses = await _friendsService.ReadAddressesAsync(null, _seeded, _flat, filter?.Trim()?.ToLower(), _pageNr, _pageSize);
             return Page();
         }
+
     }
 }
