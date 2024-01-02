@@ -38,3 +38,26 @@ body {
         text-align: left;
         background-color: #f2f2f2;
     }
+
+/* Light mode styles */
+.light-mode {
+    --background-color: #ffffff;
+    --text-color: #000000;
+    /* Define other light theme colors and styles as needed */
+}
+
+/* Dark mode styles */
+.dark-mode {
+    --background-color: #121212;
+    --text-color: #ffffff;
+    /* Define other dark theme colors and styles as needed */
+}
+
+/* Apply the styles using CSS variables */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Add more specific styles for other elements as necessary */
+

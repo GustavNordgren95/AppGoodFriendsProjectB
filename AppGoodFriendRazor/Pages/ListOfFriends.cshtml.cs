@@ -11,28 +11,32 @@ using Services;
 using Models.DTO;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using static Npgsql.PostgresTypes.PostgresCompositeType;
 
 namespace AppGoodFriendRazor.Pages
 {
     public class ListOfFriendsModel : PageModel
     {
         private readonly IFriendsService _friendsService;
+        private readonly IFriendsService _addressService;
         private readonly ILogger<ListOfFriendsModel> _logger;
 
         public List<IFriend> Friends { get; private set; }
         public List<IAddress> Addresses { get; private set; }
 
-        public ListOfFriendsModel(IFriendsService friendsService, ILogger<ListOfFriendsModel> logger)
+        public ListOfFriendsModel(IFriendsService friendsService, IFriendsService addressService, ILogger<ListOfFriendsModel> logger)
         {
             _friendsService = friendsService;
+            _addressService = addressService;
             _logger = logger;
         }
 
-        public int CurrentPage { get; set; } = 1; // Current page number
-        public int PageSize { get; set; } = 10;   // Number of items per page
+        public int CurrentPage { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
         public int TotalPages { get; set; }
         public string CurrentFilter { get; set; }
 
+        #region HTTP Requests
         public async Task<IActionResult> OnGetAsync(string filter = "", int currentPage = 1, int pageSize = 10)
         {
             CurrentPage = currentPage;
@@ -40,21 +44,23 @@ namespace AppGoodFriendRazor.Pages
             CurrentFilter = filter;
 
             var info = await _friendsService.InfoAsync;
-            var totalFriendsCount = info.Db.nrSeededFriends; // Replace TotalFriendsCount with the actual property name that holds the count
+            var totalFriendsCount = info.Db.nrSeededFriends;
+            TotalPages = (int)Math.Ceiling((double)totalFriendsCount / PageSize);
 
-            TotalPages = (int)Math.Ceiling((double)totalFriendsCount / pageSize);
-            int adjustedPageNumber = CurrentPage - 1;
+            Friends = await _friendsService.ReadFriendsAsync(null, true, true, filter?.Trim()?.ToLower(), CurrentPage - 1, PageSize) ?? new List<IFriend>();
 
-            Friends = await _friendsService.ReadFriendsAsync(null, true, true, filter?.Trim()?.ToLower(), adjustedPageNumber, PageSize);
+            var addresses = await _addressService.ReadAddressesAsync(null, true, true, filter?.Trim()?.ToLower(), CurrentPage - 1, PageSize) ?? new List<IAddress>();
 
-            if (Friends == null || !Friends.Any())
+            
+
+            if (!Friends.Any())
             {
                 _logger.LogWarning("No friends were found in the database for the current page.");
-                Friends = new List<IFriend>(); // Ensure Friends is never null
+                Friends = new List<IFriend>();
             }
 
             return Page();
         }
-
+        #endregion
     }
 }

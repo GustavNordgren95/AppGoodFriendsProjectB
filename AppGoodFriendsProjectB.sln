@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppWebApi", "AppWebApi\AppW
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{00F3F8F0-4980-4B7F-BBB1-AAF26CAB1193}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppGoodFriendRazor", "AppGoodFriendRazor\AppGoodFriendRazor.csproj", "{6901EFAE-1BCC-4412-861E-67EAC2CF55DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppGoodFriendRazor", "AppGoodFriendRazor\AppGoodFriendRazor.csproj", "{6901EFAE-1BCC-4412-861E-67EAC2CF55DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

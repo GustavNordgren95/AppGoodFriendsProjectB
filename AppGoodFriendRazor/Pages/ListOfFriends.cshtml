@@ -6,68 +6,69 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @attribute [IgnoreAntiforgeryToken]
 
-    <!-- Page list-of-friends -->
-    <div class="container px-4 py-4" id="list-of-friends">
-        <h2 class="pb-2 border-bottom">List of friends</h2>
+<h2>Friends List</h2>
 
-        <p>
-            These are my friends. You can seach by name or address. You can also view or edit all the details. Sad but possible, if you have the right authorization you
-            could also remove a friened from my database. More fun is it to add a friend, which all my friends can do.
-        </p>
-        @* <div class="row mb-1 text-center">
-            <div class="col-md-8 ">
-                <form class="d-flex mt-3 mt-lg-0" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
-        </div> *@
-    <div class="row mb-2 text-center">
-        <div class="col-md-4 themed-grid-col">Name</div>
-        <div class="col-md-4 themed-grid-col">Address</div>
-        <div class="col-md-2 themed-grid-col">Info</div>
-        <div class="col-md-2 themed-grid-col">
-            <a href="#add-edit-friend" class="btn btn-success btn-sm" type="button">Add</a>
-        </div>
-    </div>
-        @foreach (var item in Model.Friends)
+<button class="btn btn-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#addFriendForm" aria-expanded="false" aria-controls="addFriendForm">
+    New Friend
+</button>
+
+<hr />
+
+<!-- Friends List -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Info</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var friend in Model.Friends)
         {
-        <div class="row mb-2 text-center">
-            <div class="col-md-4 themed-grid-col">
-                <div class="col-md-16">@item.FirstName @item.LastName</div>
-                <div class="col-md-16">@item.Email</div>
-            </div>
-            <div class="col-md-4 themed-grid-col">
-                <div class="col-md-16">Country</div>
-                @* <div class="col-md-16">@item.Address.Country</div>
-                <div class="col-md-16">@item.Address.City</div> *@
-            </div>
-            <div class="col-md-2 themed-grid-col">
-                <div class="col-md-16">@(item.Birthday?.ToString("yyyy-MM-dd") ?? "N/A")</div>
-                <div class="col-md-16">Pets 999</div>
-                <div class="col-md-16">Quotes: 3</div>
-            </div>
-            <div class="col-md-2 themed-grid-col">
-                <a href="#view-friend" class="btn btn-primary btn-sm" type="button">View</a>
-                <a href="#add-edit-friend" class="btn btn-secondary btn-sm" type="button">Edit</a>
-                <a href="#modals" class="btn btn-danger btn-sm" type="button">Delete</a>
-            </div>
-        </div>
-        }
-    @if (Model.TotalPages > 1)
-    {
-        <div class="text-center mt-4">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    @for (int i = 1; i <= Model.TotalPages; i++)
+            <tr>
+                <td>
+                    @friend.FirstName, @friend.LastName
+                    <br/>@friend.Email
+                </td>
+                <td>
+                    @if (friend.Address != null)
                     {
-                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                            <a class="page-link" asp-page="./ListOfFriends" asp-route-currentPage="@i" asp-route-filter="@Model.CurrentFilter">@i</a>
-                        </li>
+                        @friend.Address.StreetAddress
                     }
-                </ul>
-            </nav>
-        </div>
-    }
+                    else
+                    {
+                        <text>No address</text>
+                    }
+                </td>
+                <td>@(friend.Birthday?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#editFriendForm-@friend.FriendId" aria-expanded="false" aria-controls="editFriendForm-@friend.FriendId">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalPages > 1)
+{
+    <div class="text-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-page="./ListOfFriends" asp-route-currentPage="@i" asp-route-filter="@Model.CurrentFilter">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
-</div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
