@@ -1,0 +1,21 @@
+﻿@page "/friends-in-city/{Country}"
+@model FriendsInCityModel
+
+<h2>Friends in @Model.Country</h2>
+
+<div class="container">
+    @foreach (var cityInfo in Model.FriendsInCountry)
+    {
+        <div class="row mb-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@cityInfo.City</h5>
+                        <p class="card-text">@cityInfo.NrFriends friends and @(Model.PetsInCountry.FirstOrDefault(pet => pet.City == cityInfo.City)?.NrPets ?? 0) pets.</p>
+                        <a asp-page="/ListOfFriends" asp-route-city="@cityInfo.City" class="btn btn-primary">See details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

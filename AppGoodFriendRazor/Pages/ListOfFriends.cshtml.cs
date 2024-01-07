@@ -17,12 +17,27 @@ namespace AppGoodFriendRazor.Pages
 {
     public class ListOfFriendsModel : PageModel
     {
+
+        public class FriendIndexData
+        {
+            public IEnumerable<IFriend> Friends { get; set; }
+            public IEnumerable<IAddress> Addresses { get; set; }
+        }
         private readonly IFriendsService _friendsService;
         private readonly IFriendsService _addressService;
         private readonly ILogger<ListOfFriendsModel> _logger;
 
         public List<IFriend> Friends { get; private set; }
         public List<IAddress> Addresses { get; private set; }
+
+        public class FriendAddressViewModel
+        {
+            public Guid FriendId { get; set; }
+            public string FullName { get; set; }
+            public string Email { get; set; }
+            public DateTime? Birthday { get; set; }
+            public string Address { get; set; }
+        }
 
         public ListOfFriendsModel(IFriendsService friendsService, IFriendsService addressService, ILogger<ListOfFriendsModel> logger)
         {
@@ -48,8 +63,6 @@ namespace AppGoodFriendRazor.Pages
             TotalPages = (int)Math.Ceiling((double)totalFriendsCount / PageSize);
 
             Friends = await _friendsService.ReadFriendsAsync(null, true, true, filter?.Trim()?.ToLower(), CurrentPage - 1, PageSize) ?? new List<IFriend>();
-
-            var addresses = await _addressService.ReadAddressesAsync(null, true, true, filter?.Trim()?.ToLower(), CurrentPage - 1, PageSize) ?? new List<IAddress>();
 
             
 

@@ -1,4 +1,43 @@
 ﻿@page
 @model AppGoodFriendRazor.Pages.FriendsByCountryModel
 @{
+    ViewData["Title"] = "Friend By Countries";
 }
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@attribute [IgnoreAntiforgeryToken]
+
+<!-- Page friends-by-country -->
+
+<div class="container px-4 py-4" id="friends-by-country">
+    <h2 class="pb-2 border-bottom">Friends by Country</h2>
+    <p>Click on a country below to see what cities my friends are living in.</p>
+
+    <div class="row align-items-stretch g-4 py-5">
+        @foreach (var item in Model.friendsByCountry)
+        {
+            <div class="col-md-4">
+                <!-- Adjust the column size as needed -->
+                <a href="#friends-in-a-country" class="text-decoration-none">
+                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('./img/unsplash-photo-3.jpg');">
+                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                            <h3 class="pt-1 mt-1 mb-4 display-6 lh-1 fw-bold">
+                                <a asp-page="/FriendsInCountry" asp-route-Country="@item.Country">@item.Country</a>
+                            </h3>
+                            @if (item.Country == "Unknown")
+                            {
+                                <p>Friends without a country: @Model.FriendsWithoutCountry</p>
+                            }
+                            else
+                            {
+                                <ul>
+                                    <li>@item.Cities.Sum(f => f.NrFriends) friends in @item.CityCount cities</li>
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
