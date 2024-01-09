@@ -16,7 +16,6 @@ namespace AppGoodFriendRazor
             builder.Services.AddScoped<IFriendsService, csFriendsServiceDb>();
             builder.Services.AddLogging();
 
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

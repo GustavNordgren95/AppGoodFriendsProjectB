@@ -12,47 +12,31 @@ using Models.DTO;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using static Npgsql.PostgresTypes.PostgresCompositeType;
+using SQLitePCL;
+using System.Net;
 
 namespace AppGoodFriendRazor.Pages
 {
     public class ListOfFriendsModel : PageModel
     {
 
-        public class FriendIndexData
-        {
-            public IEnumerable<IFriend> Friends { get; set; }
-            public IEnumerable<IAddress> Addresses { get; set; }
-        }
         private readonly IFriendsService _friendsService;
-        private readonly IFriendsService _addressService;
         private readonly ILogger<ListOfFriendsModel> _logger;
 
         public List<IFriend> Friends { get; private set; }
-        public List<IAddress> Addresses { get; private set; }
-
-        public class FriendAddressViewModel
-        {
-            public Guid FriendId { get; set; }
-            public string FullName { get; set; }
-            public string Email { get; set; }
-            public DateTime? Birthday { get; set; }
-            public string Address { get; set; }
-        }
-
-        public ListOfFriendsModel(IFriendsService friendsService, IFriendsService addressService, ILogger<ListOfFriendsModel> logger)
+        public ListOfFriendsModel(IFriendsService friendsService, ILogger<ListOfFriendsModel> logger)
         {
             _friendsService = friendsService;
-            _addressService = addressService;
             _logger = logger;
         }
 
         public int CurrentPage { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; set; } = 0;
         public int TotalPages { get; set; }
         public string CurrentFilter { get; set; }
 
         #region HTTP Requests
-        public async Task<IActionResult> OnGetAsync(string filter = "", int currentPage = 1, int pageSize = 10)
+        public async Task<IActionResult> OnGetAsync(string filter = "", int currentPage = 1, int pageSize = 5)
         {
             CurrentPage = currentPage;
             PageSize = pageSize;
@@ -62,9 +46,7 @@ namespace AppGoodFriendRazor.Pages
             var totalFriendsCount = info.Db.nrSeededFriends;
             TotalPages = (int)Math.Ceiling((double)totalFriendsCount / PageSize);
 
-            Friends = await _friendsService.ReadFriendsAsync(null, true, true, filter?.Trim()?.ToLower(), CurrentPage - 1, PageSize) ?? new List<IFriend>();
-
-            
+            Friends = await _friendsService.ReadFriendsAsync(null, true, false, filter?.Trim()?.ToLower(), CurrentPage - 1, pageSize);
 
             if (!Friends.Any())
             {

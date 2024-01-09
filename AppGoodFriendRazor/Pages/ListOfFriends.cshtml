@@ -6,52 +6,66 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @attribute [IgnoreAntiforgeryToken]
 
-<h2>Friends List</h2>
+<!-- Page list-of-friends -->
+<div class="container px-4 py-4" id="list-of-friends">
+    <h2 class="pb-2 border-bottom">List of friends</h2>
 
-<button class="btn btn-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#addFriendForm" aria-expanded="false" aria-controls="addFriendForm">
-    New Friend
-</button>
+    @* <div class="row mb-1 text-center">
+        <div class="col-md-8 ">
+            <form class="d-flex mt-3 mt-lg-0" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div> *@
 
-<hr />
-
-<!-- Friends List -->
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Address</th>
-            <th>Info</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var friend in Model.Friends)
-        {
-            <tr>
-                <td>
-                    @friend.FirstName, @friend.LastName
-                    <br/>@friend.Email
-                </td>
-                <td>
-                    @if (friend.Address != null)
+    <div class="row mb-2 text-center">
+        <div class="col-md-4 themed-grid-col">Name</div>
+        <div class="col-md-4 themed-grid-col">Address</div>
+        <div class="col-md-2 themed-grid-col">Info</div>
+        <div class="col-md-2 themed-grid-col">Actions</div>
+    </div>
+    @foreach (var friend in Model.Friends)
+    {
+        <div class="row mb-2 text-center">
+            <div class="col-md-4 themed-grid-col">
+                @friend.FirstName, @friend.LastName
+                <div class="col-md-16">@friend.Email</div>
+            </div>
+            <div class="col-md-4 themed-grid-col">
+                @if (friend.Address != null)
+                {
+                    @friend.Address.StreetAddress
+                    <div class="col-md-16">@friend.Address.ZipCode,  @friend.Address.City</div>
+                    <div class="col-md-16">@friend.Address.Country</div>
+                }
+                else
+                {
+                    <text>No address found</text>
+                }
+            </div>
+            <div class="col-md-2 themed-grid-col">
+                <div class="col-md-16">
+                    @if (friend.Birthday != null)
                     {
-                        @friend.Address.Country
+                       <text>Born: </text> @friend.Birthday.Value.ToString("yyyy-MM-dd")
                     }
                     else
                     {
-                        <text>No address</text>
+                        <text>No birthday found</text>
                     }
-                </td>
-                <td>@(friend.Birthday?.ToString("yyyy-MM-dd") ?? "N/A")</td>
-                <td>
-                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#editFriendForm-@friend.FriendId" aria-expanded="false" aria-controls="editFriendForm-@friend.FriendId">
-                        Edit
-                    </button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </div>
+                <div class="col-md-16">Pets: @friend.Pets.Count()</div>
+                <div class="col-md-16">Quotes: @friend.Quotes.Count()</div>
+            </div>
+            <div class="col-md-2 themed-grid-col">
+                <a href="#view-friend" class="btn btn-primary btn-sm" type="button">View</a>
+                <a href="#add-edit-friend" class="btn btn-secondary btn-sm" type="button">Edit</a>
+                <a href="#modals" class="btn btn-danger btn-sm" type="button">Delete</a>
+            </div>
+        </div>
+    }
+</div>
 
 @if (Model.TotalPages > 1)
 {
@@ -67,8 +81,4 @@
             </ul>
         </nav>
     </div>
-}
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
 }
