@@ -1,0 +1,26 @@
+﻿@page "/edit-friend/{id:guid}"
+@model AppGoodFriendRazor.Pages.EditFriendModel
+
+<h2>Edit Friend's Details</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="FriendData.Friend.FriendId" />
+
+    <div class="form-group">
+        <label asp-for="FriendData.Friend.FirstName">First Name</label>
+        <input asp-for="FriendData.Friend.FirstName" class="form-control" />
+        <span asp-validation-for="FriendData.Friend.FirstName" class="text-danger"></span>
+    </div>
+
+    <!-- Other fields for Last Name, Email, etc. -->
+
+    <div class="form-group">
+        <label asp-for="FriendData.Address.StreetAddress">Street Address</label>
+        <input asp-for="FriendData.Address.StreetAddress" class="form-control" />
+        <span asp-validation-for="FriendData.Address.StreetAddress" class="text-danger"></span>
+    </div>
+
+    <!-- Other fields for Zip, City, Country -->
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>

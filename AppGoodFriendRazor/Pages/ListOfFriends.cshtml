@@ -59,7 +59,7 @@
                 <div class="col-md-16">Quotes: @friend.Quotes.Count()</div>
             </div>
             <div class="col-md-2 themed-grid-col">
-                <a href="#view-friend" class="btn btn-primary btn-sm" type="button">View</a>
+                <a asp-page="/FriendDetails" asp-route-id="@friend.FriendId" class="btn btn-primary btn-sm">View</a>
                 <a href="#add-edit-friend" class="btn btn-secondary btn-sm" type="button">Edit</a>
                 <a href="#modals" class="btn btn-danger btn-sm" type="button">Delete</a>
             </div>
