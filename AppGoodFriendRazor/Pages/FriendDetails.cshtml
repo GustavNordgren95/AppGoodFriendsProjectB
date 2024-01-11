@@ -55,6 +55,7 @@
                 </div>
 
                 <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditFriend" asp-route-id="@Model.Friend.FriendId">
+                   
                     Edit Friend Details
                 </a>
 
@@ -64,7 +65,7 @@
         <div class="col-md-7 col-lg-8">
             <h3 class="pb-2">
                 My friend's pets
-                <a href="#add-edit-pet" class="btn btn-success btn-sm" type="button">Add</a>
+                <button type="button" class="btn btn-success btn-sm" onclick="openPetModal('add')">Add Pet</button>
             </h3>
 
             @foreach (var pet in Model.Friend.Pets)
@@ -72,7 +73,7 @@
                 <div class="row mb-2 text-center">
                     <div class="col-md-10 themed-grid-col">@pet.Name the @pet.Mood @pet.Kind</div>
                     <div class="col-md-2 themed-grid-col">
-                        <a href="#add-edit-pet" class="btn btn-secondary btn-sm" type="button">Edit</a>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="openEditPetModal('@pet.PetId', '@pet.Name', '@pet.Kind', '@pet.Mood')">Edit</button>
                         <a href="#modals" class="btn btn-danger btn-sm" type="button">Delete</a>
                     </div>
                 </div>
@@ -103,3 +104,75 @@
         </div>
     </div>
 </div>
+
+<!-- Edit Pet Modal -->
+<div class="modal fade" id="editPetModal" tabindex="-1" aria-labelledby="editPetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPetModalLabel">Edit Pet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for editing pet details -->
+                <form id="editPetForm" method="post" asp-page-handler="UpdatePet">
+                    <input type="hidden" id="petId" name="petId" value="" />
+                    <input type="hidden" id="friendId" name="friendId" value="@Model.Friend.FriendId" />
+                    <div class="mb-3">
+                        <label for="petName" class="form-label">Pet Name</label>
+                        <input type="text" id="petName" name="petName" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="petKind" class="form-label">Pet Kind</label>
+                        <select id="petKind" name="petKind" class="form-control">
+                            <option value="Dog">Dog</option>
+                            <option value="Cat">Cat</option>
+                            <option value="Rabbit">Rabbit</option>
+                            <option value="Fish">Fish</option>
+                            <option value="Bird">Bird</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="petMood" class="form-label">Pet Mood</label>
+                        <select id="petMood" name="petMood" class="form-control">
+                            <option value="Happy">Happy</option>
+                            <option value="Hungry">Hungry</option>
+                            <option value="Lazy">Lazy</option>
+                            <option value="Sulky">Sulky</option>
+                            <option value="Buzy">Buzy</option>
+                            <option value="Sleepy">Sleepy</option>
+                        </select>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="editPetForm" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function openPetModal(mode, petId = '', petName = '', petKind = '', petMood = '') {
+        var petForm = document.getElementById('editPetForm');
+        if (mode === 'add') {
+            petForm.petId.value = '';
+            document.getElementById('petName').value = '';
+            document.getElementById('petKind').value = '';
+            document.getElementById('petMood').value = '';
+        } else {
+            document.getElementById('petId').value = petId;
+            document.getElementById('petName').value = petName;
+            document.getElementById('petKind').value = petKind;
+            document.getElementById('petMood').value = petMood;
+        }
+
+        // Open the modal
+        var petModal = new bootstrap.Modal(document.getElementById('editPetModal'));
+        petModal.show();
+    }
+</script>

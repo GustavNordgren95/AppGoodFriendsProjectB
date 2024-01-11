@@ -43,7 +43,7 @@ public class csFriendsDbRepos
     {
         _instanceHello = $"Hello from class {this.GetType()} with instance Guid {_guid}.";
     }
-    public csFriendsDbRepos(ILogger<csFriendsDbRepos> logger):this()
+    public csFriendsDbRepos(ILogger<csFriendsDbRepos> logger) : this()
     {
         _logger = logger;
         _logger.LogInformation(_instanceHello);
@@ -774,7 +774,7 @@ public class csFriendsDbRepos
                 (i.Quote == itemDto.Quote)));
             var _existingItem = await _query2.FirstOrDefaultAsync<csQuoteDbM>();
             if (_existingItem != null && _existingItem.QuoteId != itemDto.QuoteId)
-                throw new ArgumentException($"Item already exist with id {_existingItem.QuoteId}");
+                return _existingItem;
 
 
             //transfer any changes from DTO to database objects
@@ -803,7 +803,8 @@ public class csFriendsDbRepos
                 (i.Quote == itemDto.Quote)));
             var _existingItem = await _query2.FirstOrDefaultAsync<csQuoteDbM>();
             if (_existingItem != null)
-                throw new ArgumentException($"Item already exist with id {_existingItem.QuoteId}");
+                return _existingItem;
+            //throw new ArgumentException($"Item already exist with id {_existingItem.QuoteId}");
 
             //transfer any changes from DTO to database objects
             //Update individual properties 
