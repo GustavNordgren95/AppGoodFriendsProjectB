@@ -57,21 +57,20 @@ namespace AppGoodFriendRazor.Pages
                 Name = petName,
                 Kind = petKind,
                 Mood = petMood,
-                FriendId = friendId // Assign the FriendId
+                FriendId = friendId
             };
 
             await _friendsService.UpdatePetAsync(null, petDto);
-            return RedirectToPage(new { id = friendId }); // Redirect back to the friend's details page
+            return RedirectToPage(new { id = friendId });
         }
 
         public async Task<IActionResult> OnPostSavePetAsync(string petName, enAnimalKind petKind, enAnimalMood petMood, Guid friendId, Guid? petId = null)
         {
             if (petId == null || petId == Guid.Empty)
             {
-                // Creating a new pet
+                // Creating a new pet, note to self that the new id is created in the service and doesn't need to be created here
                 var newPetDto = new csPetCUdto
-                {
-                    PetId = Guid.NewGuid(),
+                {   
                     Name = petName,
                     Kind = petKind,
                     Mood = petMood,
@@ -81,7 +80,7 @@ namespace AppGoodFriendRazor.Pages
             }
             else
             {
-                // Updating an existing pet
+
                 var petDto = new csPetCUdto
                 {
                     PetId = petId.Value,
