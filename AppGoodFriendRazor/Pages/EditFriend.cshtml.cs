@@ -54,10 +54,6 @@ namespace AppGoodFriendRazor.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-
-
-
-
             var friendCUdto = new csFriendCUdto
             {
                 FriendId = FriendIM.FriendId,
@@ -66,19 +62,16 @@ namespace AppGoodFriendRazor.Pages
                 Email = FriendIM.Email,
                 Birthday = FriendIM.Birthday,
                 AddressId = FriendIM.AddressId,
-
+                
+        
+                
             };
 
             await _friendsService.UpdateFriendAsync(null, friendCUdto);
 
             // Redirect to the FriendDetails page for the edited friend
             return RedirectToPage("./FriendDetails", new { id = FriendIM.FriendId });
-
-
         }
-
-
-
 
         #endregion
 
@@ -87,17 +80,55 @@ namespace AppGoodFriendRazor.Pages
 
         public class csPetIM
         {
-            public Guid PetId { get; set; }
+            public enStatusIM StatusIM { get; set; }
+            public Guid? PetId { get; set; }
             public string Name { get; set; }
-            // Other pet properties...
+            public enAnimalKind Kind { get; set; }
+            public enAnimalMood Mood { get; set; }
+
+            public csPetIM() { }
+
+            public csPetIM(IPet original)
+            {
+                PetId = original.PetId;
+                Name = original.Name;
+                Kind = original.Kind;
+                Mood = original.Mood;
+            }
+            public csPetIM(csPet model)
+            {
+                StatusIM = enStatusIM.Unchanged;
+                PetId = model.PetId;
+                Name = model.Name;
+                Kind = model.Kind;
+                Mood = model.Mood;
+            }
         }
 
         public class csQuoteIM
         {
+            public enStatusIM StatusIM { get; set; }
             public Guid QuoteId { get; set; }
             public string Quote { get; set; }
             public string Author { get; set; }
-            // Other quote properties...
+
+            public csQuoteIM() { }
+
+            public csQuoteIM(IQuote original)
+            {
+                QuoteId = original.QuoteId;
+                Quote = original.Quote;
+                Author = original.Author;
+            }
+            public csQuoteIM(csQuote model)
+            {
+                StatusIM = enStatusIM.Unchanged;
+                QuoteId = model.QuoteId;
+                Quote = model.Quote;
+                Author= model.Author;
+
+            }
+
         }
 
         public class csFriendIM
@@ -126,17 +157,10 @@ namespace AppGoodFriendRazor.Pages
             public string City { get; set; }
             public string Country { get; set; }
 
-            public Guid? PetId { get; set; }
-            public string Name { get; set; }
-            public virtual enAnimalKind Kind { get; set; }
-            public virtual enAnimalMood Mood { get; set; }
 
-            public Guid? QuoteId { get; set; }
-            public string Quote { get; set; }
-            public string Author { get; set; }
-
-            public List<csPetIM> Pets { get; set; } = new List<csPetIM>();
+            public List<csPetIM> PetsId { get; set; } = new List<csPetIM>();
             public List<csQuoteIM> Quotes { get; set; } = new List<csQuoteIM>();
+
 
 
             #region constructors and model update
@@ -173,9 +197,21 @@ namespace AppGoodFriendRazor.Pages
                 Country = original.Address?.Country;
                 ZipCode = original.Address?.ZipCode;
 
+                PetsId = original.Pets?.Select(pet => new csPetIM(pet)).ToList() ?? new List<csPetIM>();
+                Quotes = original.Quotes?.Select(quote => new csQuoteIM(quote)).ToList() ?? new List<csQuoteIM>();
+            }
 
-
-
+            csFriendIM(csFriend model)
+            {
+                StatusIM = enStatusIM.Unchanged;
+                FriendId = model.FriendId;
+                FirstName = model.FirstName;
+                LastName = model.LastName;
+                Birthday = model.Birthday;
+                Email = model.Email;
+                AddressId = model.Address.AddressId;
+                PetsId = model.Pets?.Select(pet => new csPetIM(pet)).ToList() ?? new List<csPetIM>();
+                Quotes = model.Quotes?.Select(quote => new csQuoteIM(quote)).ToList() ?? new List<csQuoteIM>();
             }
 
             public IFriend UpdateModel(IFriend model)
@@ -186,11 +222,9 @@ namespace AppGoodFriendRazor.Pages
                 model.Birthday = Birthday;
                 model.Email = Email;
 
-
                 return model;
             }
             #endregion
-
         }
         #endregion
     }
