@@ -1,0 +1,48 @@
+﻿@page
+@model AppGoodFriendRazor.Pages.EditPetModel
+@{
+    var animalKinds = Enum.GetValues(typeof(Models.enAnimalKind));
+    var animalMoods = Enum.GetValues(typeof(Models.enAnimalMood));
+}
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editPetModalLabel">Edit Pet</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <!-- Form for editing pet details -->
+            <form id="editPetForm" method="post" asp-page-handler="UpdatePet">
+                <input type="hidden" id="friendId" name="friendId" value="@Model.Pet.Friend.FriendId" />
+                <input type="hidden" id="petId" name="petId" value="@Model.Pet.PetId" />
+                <div class="mb-3">
+                    <label for="petName" class="form-label">Pet Name</label>
+                    <input type="text" id="petName" name="petName" class="form-control" value="@Model.Pet.Name" />
+                </div>
+                <div class="mb-3">
+                    <label for="petKind" class="form-label">Pet Kind</label>
+                    <select id="petKind" name="petKind" class="form-control">
+                        @foreach (var kind in animalKinds)
+                        {
+                            <option value="@kind">@kind</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="petMood" class="form-label">Pet Mood</label>
+                    <select id="petMood" name="petMood" class="form-control">
+                        @foreach (var mood in animalMoods)
+                        {
+                            <option value="@mood">@mood</option>
+                        }
+                    </select>
+                </div>
+
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" form="editPetForm" class="btn btn-primary">Save changes</button>
+        </div>
+    </div>
+</div>

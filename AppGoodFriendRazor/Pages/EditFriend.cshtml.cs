@@ -15,16 +15,11 @@ namespace AppGoodFriendRazor.Pages
 {
     public class EditFriendModel : PageModel
     {
-        private readonly IFriendsService _friendsService;
+        private readonly IFriendsService _friendsService = null;
         private readonly ILogger<EditFriendModel> _logger;
 
-        public IFriend Friend { get; set; }
-
         [BindProperty]
-        public csFriendIM FriendInput { get; set; }
-
-        [BindProperty]
-        public csFriendIM NewFriendIM { get; set; } = new csFriendIM();
+        public csFriendIM FriendIM { get; set; }
 
         [BindProperty]
         public string PageHeader { get; set; }
@@ -46,103 +41,63 @@ namespace AppGoodFriendRazor.Pages
                 return NotFound();
             }
 
-            Friend = await _friendsService.ReadFriendAsync(null, Id, false);
-            if (Friend == null)
+            var friend = await _friendsService.ReadFriendAsync(null, Id, false);
+            if (friend == null)
             {
                 return NotFound();
             }
 
-            FriendInput = new csFriendIM(Friend);
+            FriendIM = new csFriendIM(friend);
             PageHeader = "Edit details of a friend";
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
 
-            try
-            {
-                var friendDto = new csFriendCUdto
-                {
-                    FriendId = FriendInput.FriendId,
-                    FirstName = FriendInput.FirstName,
-                    LastName = FriendInput.LastName,
-                    Birthday = FriendInput.Birthday,
-                    Email = FriendInput.Email
-                    
-                };
 
-                await _friendsService.UpdateFriendAsync(null, friendDto);
 
-                return RedirectToPage("FriendDetails", new { id = friendDto.FriendId });
-            }
-            catch (Exception ex)
+
+            var friendCUdto = new csFriendCUdto
             {
-                _logger.LogError(ex, "Error updating friend details");
-                ModelState.AddModelError(string.Empty, "An error occurred while updating the friend's details.");
-                return Page();
-            }
+                FriendId = FriendIM.FriendId,
+                FirstName = FriendIM.FirstName,
+                LastName = FriendIM.LastName,
+                Email = FriendIM.Email,
+                Birthday = FriendIM.Birthday,
+                AddressId = FriendIM.AddressId,
+
+            };
+
+            await _friendsService.UpdateFriendAsync(null, friendCUdto);
+
+            // Redirect to the FriendDetails page for the edited friend
+            return RedirectToPage("./FriendDetails", new { id = FriendIM.FriendId });
+
+
         }
+
+
+
 
         #endregion
 
         #region Input Model
         public enum enStatusIM { Unknown, Unchanged, Inserted, Modified, Deleted }
-        public class csAddressIM
+
+        public class csPetIM
         {
-            public enStatusIM StatusIM { get; set; }
+            public Guid PetId { get; set; }
+            public string Name { get; set; }
+            // Other pet properties...
+        }
 
-            public Guid AddressId { get; set; }
-            public string StreetAddress { get; set; }
-            public int ZipCode { get; set; }
-            public string City { get; set; }
-            public string Country { get; set; }
-
-            public string editStreetAddress { get; set; }
-            public int editZipCode { get; set; }
-            public string editCity { get; set; }
-            public string editCountry { get; set; }
-
-            public csAddress UpdateModel(csAddress model)
-            {
-                model.AddressId = this.AddressId;
-                model.StreetAddress = this.StreetAddress;
-                model.ZipCode = this.ZipCode;
-                model.City = this.City;
-                model.Country = this.Country;
-
-                return model;
-            }
-
-            public csAddressIM() { }
-
-            public csAddressIM(csAddressIM original)
-            {
-                StatusIM = original.StatusIM;
-                AddressId = original.AddressId;
-                StreetAddress = original.StreetAddress;
-                ZipCode = original.ZipCode;
-                City = original.City;
-                Country = original.Country;
-
-                editStreetAddress = original.editStreetAddress;
-                editZipCode = original.editZipCode;
-                editCity = original.editCity;
-                editCountry = original.editCountry;
-            }
-            public csAddressIM(csAddress model)
-            {
-                StatusIM = enStatusIM.Unchanged;
-                AddressId = model.AddressId;
-                StreetAddress = model.StreetAddress;
-                ZipCode = model.ZipCode;
-                City = model.City;
-                Country= model.Country;
-            }
+        public class csQuoteIM
+        {
+            public Guid QuoteId { get; set; }
+            public string Quote { get; set; }
+            public string Author { get; set; }
+            // Other quote properties...
         }
 
         public class csFriendIM
@@ -150,9 +105,14 @@ namespace AppGoodFriendRazor.Pages
             public enStatusIM StatusIM { get; set; }
 
             public Guid FriendId { get; set; }
+
+            [Required(ErrorMessage = "First name is required")]
             public string FirstName { get; set; }
+            [Required(ErrorMessage = "Last name is required")]
             public string LastName { get; set; }
+            [Required(ErrorMessage = "Birthday is required")]
             public DateTime? Birthday { get; set; }
+            [Required(ErrorMessage = "Email is required")]
             public string Email { get; set; }
 
             public string editFirstName { get; set; }
@@ -160,9 +120,26 @@ namespace AppGoodFriendRazor.Pages
             public DateTime? editBirthday { get; set; }
             public string editEmail { get; set; }
 
-            #region constructors and model update
+            public Guid? AddressId { get; set; }
+            public string StreetAddress { get; set; }
+            public int? ZipCode { get; set; }
+            public string City { get; set; }
+            public string Country { get; set; }
 
-            public csAddressIM Address { get; set; } = new csAddressIM();
+            public Guid? PetId { get; set; }
+            public string Name { get; set; }
+            public virtual enAnimalKind Kind { get; set; }
+            public virtual enAnimalMood Mood { get; set; }
+
+            public Guid? QuoteId { get; set; }
+            public string Quote { get; set; }
+            public string Author { get; set; }
+
+            public List<csPetIM> Pets { get; set; } = new List<csPetIM>();
+            public List<csQuoteIM> Quotes { get; set; } = new List<csQuoteIM>();
+
+
+            #region constructors and model update
 
             public csFriendIM() { }
             public csFriendIM(csFriendIM original)
@@ -190,9 +167,18 @@ namespace AppGoodFriendRazor.Pages
                 Birthday = editBirthday = original.Birthday;
                 Email = editEmail = original.Email;
 
+                AddressId = original.Address?.AddressId;
+                StreetAddress = original.Address?.StreetAddress;
+                City = original.Address?.City;
+                Country = original.Address?.Country;
+                ZipCode = original.Address?.ZipCode;
+
+
+
+
             }
 
-            public csFriendIM(csFriend model)
+            public IFriend UpdateModel(IFriend model)
             {
                 model.FriendId = FriendId;
                 model.FirstName = FirstName;
@@ -200,7 +186,8 @@ namespace AppGoodFriendRazor.Pages
                 model.Birthday = Birthday;
                 model.Email = Email;
 
-                
+
+                return model;
             }
             #endregion
 

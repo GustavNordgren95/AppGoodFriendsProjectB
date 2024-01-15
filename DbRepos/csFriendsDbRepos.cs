@@ -135,7 +135,7 @@ public class csFriendsDbRepos
             for (int c = 0; c < nrOfItems; c++)
             {
                 //Assign addresses. Friends could live on the same address
-                _friends[c].AddressDbM = (_seeder.Bool) ? _seeder.FromList(_addresses) : null;
+                _friends[c].AddressDbM = _seeder.FromList(_addresses);
 
                 //Create between 0 and 3 pets
                 var _pets = new List<csPetDbM>();
