@@ -62,8 +62,8 @@ namespace AppGoodFriendRazor.Pages
                 Email = FriendIM.Email,
                 Birthday = FriendIM.Birthday,
                 AddressId = FriendIM.AddressId,
+               
                 
-        
                 
             };
 
@@ -80,7 +80,6 @@ namespace AppGoodFriendRazor.Pages
 
         public class csPetIM
         {
-            public enStatusIM StatusIM { get; set; }
             public Guid? PetId { get; set; }
             public string Name { get; set; }
             public enAnimalKind Kind { get; set; }
@@ -97,7 +96,6 @@ namespace AppGoodFriendRazor.Pages
             }
             public csPetIM(csPet model)
             {
-                StatusIM = enStatusIM.Unchanged;
                 PetId = model.PetId;
                 Name = model.Name;
                 Kind = model.Kind;
@@ -107,7 +105,6 @@ namespace AppGoodFriendRazor.Pages
 
         public class csQuoteIM
         {
-            public enStatusIM StatusIM { get; set; }
             public Guid QuoteId { get; set; }
             public string Quote { get; set; }
             public string Author { get; set; }
@@ -122,7 +119,6 @@ namespace AppGoodFriendRazor.Pages
             }
             public csQuoteIM(csQuote model)
             {
-                StatusIM = enStatusIM.Unchanged;
                 QuoteId = model.QuoteId;
                 Quote = model.Quote;
                 Author= model.Author;
@@ -133,7 +129,6 @@ namespace AppGoodFriendRazor.Pages
 
         public class csFriendIM
         {
-            public enStatusIM StatusIM { get; set; }
 
             public Guid FriendId { get; set; }
 
@@ -158,7 +153,7 @@ namespace AppGoodFriendRazor.Pages
             public string Country { get; set; }
 
 
-            public List<csPetIM> PetsId { get; set; } = new List<csPetIM>();
+            public List<csPetIM> Pets { get; set; } = new List<csPetIM>();
             public List<csQuoteIM> Quotes { get; set; } = new List<csQuoteIM>();
 
 
@@ -168,7 +163,6 @@ namespace AppGoodFriendRazor.Pages
             public csFriendIM() { }
             public csFriendIM(csFriendIM original)
             {
-                StatusIM = original.StatusIM;
 
                 FriendId = original.FriendId;
                 FirstName = original.FirstName;
@@ -182,9 +176,8 @@ namespace AppGoodFriendRazor.Pages
                 editEmail = original.editEmail;
             }
 
-            public csFriendIM(IFriend original)
+            public csFriendIM(csFriend original)
             {
-                StatusIM = enStatusIM.Unchanged;
                 FriendId = original.FriendId;
                 FirstName = editFirstName = original.FirstName;
                 LastName = editLastName = original.LastName;
@@ -197,21 +190,20 @@ namespace AppGoodFriendRazor.Pages
                 Country = original.Address?.Country;
                 ZipCode = original.Address?.ZipCode;
 
-                PetsId = original.Pets?.Select(pet => new csPetIM(pet)).ToList() ?? new List<csPetIM>();
+                Pets = original.Pets?.Select(pet => new csPetIM(pet)).ToList() ?? new List<csPetIM>();
                 Quotes = original.Quotes?.Select(quote => new csQuoteIM(quote)).ToList() ?? new List<csQuoteIM>();
             }
 
-            csFriendIM(csFriend model)
+            public csFriendIM(IFriend model)
             {
-                StatusIM = enStatusIM.Unchanged;
                 FriendId = model.FriendId;
                 FirstName = model.FirstName;
                 LastName = model.LastName;
                 Birthday = model.Birthday;
                 Email = model.Email;
                 AddressId = model.Address.AddressId;
-                PetsId = model.Pets?.Select(pet => new csPetIM(pet)).ToList() ?? new List<csPetIM>();
-                Quotes = model.Quotes?.Select(quote => new csQuoteIM(quote)).ToList() ?? new List<csQuoteIM>();
+               /* Pets = model.Pets.Select(x => x.PetId).ToList();
+                Quotes = model.Quotes.Select(x => x.QuoteId).ToList();*/
             }
 
             public IFriend UpdateModel(IFriend model)
