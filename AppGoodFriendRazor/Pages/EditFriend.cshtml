@@ -11,9 +11,13 @@
     <input type="hidden" name="petId" data-seido-selected-item-id-target />
     <input type="hidden" name="quoteId" data-seido-selected-item-id-target />
 
-    @for (int i = 0; i < Model.FriendIM.PetsId.Count; i++)
+    @for (int i = 0; i < Model.FriendIM.Pets.Count; i++)
     {
-        <input type="hidden" asp-for="@Model.FriendIM.PetsId[i].PetId" />
+        <input type="hidden" asp-for="@Model.FriendIM.Pets[i]" />
+    }
+    @for (int i = 0; i < Model.FriendIM.Quotes.Count; i++)
+    {
+        <input type="hidden" asp-for="@Model.FriendIM.Quotes[i]" />
     }
     <div class="row g-3">
 

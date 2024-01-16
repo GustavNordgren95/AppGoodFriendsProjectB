@@ -10,6 +10,8 @@ using static AppGoodFriendRazor.Pages.EditFriendModel;
 using System.ComponentModel.DataAnnotations;
 using Models;
 using static Npgsql.PostgresTypes.PostgresCompositeType;
+using System.Diagnostics.Metrics;
+using System.Reflection.Emit;
 
 namespace AppGoodFriendRazor.Pages
 {
@@ -62,9 +64,8 @@ namespace AppGoodFriendRazor.Pages
                 Email = FriendIM.Email,
                 Birthday = FriendIM.Birthday,
                 AddressId = FriendIM.AddressId,
-               
-                
-                
+                PetsId = FriendIM.Pets,
+                QuotesId = FriendIM.Quotes    
             };
 
             await _friendsService.UpdateFriendAsync(null, friendCUdto);
@@ -76,148 +77,123 @@ namespace AppGoodFriendRazor.Pages
         #endregion
 
         #region Input Model
-        public enum enStatusIM { Unknown, Unchanged, Inserted, Modified, Deleted }
-
-        public class csPetIM
-        {
-            public Guid? PetId { get; set; }
-            public string Name { get; set; }
-            public enAnimalKind Kind { get; set; }
-            public enAnimalMood Mood { get; set; }
-
-            public csPetIM() { }
-
-            public csPetIM(IPet original)
-            {
-                PetId = original.PetId;
-                Name = original.Name;
-                Kind = original.Kind;
-                Mood = original.Mood;
-            }
-            public csPetIM(csPet model)
-            {
-                PetId = model.PetId;
-                Name = model.Name;
-                Kind = model.Kind;
-                Mood = model.Mood;
-            }
-        }
-
-        public class csQuoteIM
-        {
-            public Guid QuoteId { get; set; }
-            public string Quote { get; set; }
-            public string Author { get; set; }
-
-            public csQuoteIM() { }
-
-            public csQuoteIM(IQuote original)
-            {
-                QuoteId = original.QuoteId;
-                Quote = original.Quote;
-                Author = original.Author;
-            }
-            public csQuoteIM(csQuote model)
-            {
-                QuoteId = model.QuoteId;
-                Quote = model.Quote;
-                Author= model.Author;
-
-            }
-
-        }
 
         public class csFriendIM
         {
-
             public Guid FriendId { get; set; }
 
-            [Required(ErrorMessage = "First name is required")]
+            [Required(ErrorMessage = "You must provide a first name")]
             public string FirstName { get; set; }
-            [Required(ErrorMessage = "Last name is required")]
+
+            [Required(ErrorMessage = "You must provide a last name")]
             public string LastName { get; set; }
-            [Required(ErrorMessage = "Birthday is required")]
-            public DateTime? Birthday { get; set; }
-            [Required(ErrorMessage = "Email is required")]
+
+            [Required(ErrorMessage = "You must provide an email")]
             public string Email { get; set; }
 
+            [Required(ErrorMessage = "You must prove a birthday")]
+            public DateTime? Birthday { get; set; }
+
+
+            //Ids belonging to the related entities used for making sure they are carried along
+            //with the updated friend
+            public Guid AddressId { get; set; }
+
+            public List<Guid> Pets { get; set; } = new List<Guid>();
+
+            public List<Guid> Quotes { get; set; } = new List<Guid>(); 
+
+
+            [Required(ErrorMessage = "You must provide a first name")]
             public string editFirstName { get; set; }
+
+            [Required(ErrorMessage = "You must provide a last name")]
             public string editLastName { get; set; }
-            public DateTime? editBirthday { get; set; }
+
+            [Required(ErrorMessage = "You must provide an email")]
             public string editEmail { get; set; }
 
-            public Guid? AddressId { get; set; }
-            public string StreetAddress { get; set; }
-            public int? ZipCode { get; set; }
-            public string City { get; set; }
-            public string Country { get; set; }
-
-
-            public List<csPetIM> Pets { get; set; } = new List<csPetIM>();
-            public List<csQuoteIM> Quotes { get; set; } = new List<csQuoteIM>();
-
-
-
-            #region constructors and model update
-
-            public csFriendIM() { }
-            public csFriendIM(csFriendIM original)
-            {
-
-                FriendId = original.FriendId;
-                FirstName = original.FirstName;
-                LastName = original.LastName;
-                Birthday = original.Birthday;
-                Email = original.Email;
-
-                editFirstName = original.editFirstName;
-                editLastName = original.editLastName;
-                editBirthday = original.editBirthday;
-                editEmail = original.editEmail;
-            }
-
-            public csFriendIM(csFriend original)
-            {
-                FriendId = original.FriendId;
-                FirstName = editFirstName = original.FirstName;
-                LastName = editLastName = original.LastName;
-                Birthday = editBirthday = original.Birthday;
-                Email = editEmail = original.Email;
-
-                AddressId = original.Address?.AddressId;
-                StreetAddress = original.Address?.StreetAddress;
-                City = original.Address?.City;
-                Country = original.Address?.Country;
-                ZipCode = original.Address?.ZipCode;
-
-                Pets = original.Pets?.Select(pet => new csPetIM(pet)).ToList() ?? new List<csPetIM>();
-                Quotes = original.Quotes?.Select(quote => new csQuoteIM(quote)).ToList() ?? new List<csQuoteIM>();
-            }
-
-            public csFriendIM(IFriend model)
-            {
-                FriendId = model.FriendId;
-                FirstName = model.FirstName;
-                LastName = model.LastName;
-                Birthday = model.Birthday;
-                Email = model.Email;
-                AddressId = model.Address.AddressId;
-               /* Pets = model.Pets.Select(x => x.PetId).ToList();
-                Quotes = model.Quotes.Select(x => x.QuoteId).ToList();*/
-            }
+            [Required(ErrorMessage = "You must prove a birthday")]
+            public DateTime? editBirthday { get; set; }
 
             public IFriend UpdateModel(IFriend model)
             {
-                model.FriendId = FriendId;
-                model.FirstName = FirstName;
-                model.LastName = LastName;
-                model.Birthday = Birthday;
-                model.Email = Email;
-
+                model.FriendId = this.FriendId;
+                model.FirstName = this.FirstName;
+                model.LastName = this.LastName;
+                model.Email = this.Email;
+                model.Birthday = this.Birthday;
                 return model;
             }
-            #endregion
+
+            public csFriendIM() { }
+
+            public csFriendIM(csFriendIM original)
+            {
+                FriendId = original.FriendId;
+                FirstName = original.FirstName;
+                LastName = original.LastName;
+                Email = original.Email;
+                Birthday = original.Birthday;
+
+                editFirstName = original.editFirstName;
+                editLastName = original.editLastName;
+                editEmail = original.editEmail;
+                editBirthday = original.editBirthday;
+            }
+            public csFriendIM(IFriend model)
+            {
+
+                FriendId = model.FriendId;
+                FirstName = model.FirstName;
+                LastName = model.LastName;
+                Email = model.Email;
+                Birthday = model.Birthday;
+
+                AddressId = model.Address.AddressId;
+
+                Pets = model.Pets.Select(x => x.PetId).ToList();
+                Quotes = model.Quotes.Select(x => x.QuoteId).ToList();
+            }
+
+            public class csAddressIM
+            {
+                public Guid AddressId { get; set; }
+
+                public csAddressIM() { }
+
+                public csAddressIM(csAddressIM original)
+                {
+                    AddressId = original.AddressId;
+                }
+            }
+
+            public class csPetIM
+            {
+                public Guid PetId { get; set; }
+
+                public csPetIM() { }
+
+                public csPetIM(csPetIM original)
+                {
+                    PetId = original.PetId;
+                }
+            }
+
+            public class csQuoteIM
+            {
+                public Guid QuoteId { get; set; }
+
+                public csQuoteIM() { }
+
+                public csQuoteIM(csQuoteIM original)
+                {
+                    QuoteId = original.QuoteId;
+                }
+            }
         }
+
+
         #endregion
     }
 }

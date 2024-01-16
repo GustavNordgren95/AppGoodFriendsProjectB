@@ -11,9 +11,6 @@
     <p>Below you find all the details of my friend. You can also modify the pets my friend has and the quotes he/she likes.</p>
 
     <div class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
-        <h3>
-            My friend's details
-        </h3>
         <div class="col-md-7 col-lg-8">
             <form class="needs-validation" novalidate>
                 <div class="row g-3">
@@ -38,20 +35,6 @@
                         <input type="date" class="form-control" id="birthday" value=@Model.Friend.Birthday?.ToString("yyyy-MM-dd") ?? readonly "No birthday found">
                     </div>
 
-                <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditFriend" asp-route-id="@Model.Friend.FriendId">            
-                    Edit Friend
-                </a>
-
-            </form>
-        </div>
-
-        <div class="col-md-7 col-lg-8">
-            <h3>
-            My friend's address
-            </h3>
-            <form class="needs-validation" novalidate>
-                <div class="row g-3">
-
                     <div class="col-12">
                         <label for="address" class="form-label">Address</label>
                         <input type="text" class="form-control" id="address" value="@Model.Friend.Address?.StreetAddress" ?? readonly>
@@ -73,8 +56,8 @@
                     </div>
                 </div>
 
-                <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditAddress" asp-route-id="@Model.Friend.FriendId">
-                    Edit Address
+                <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditFriend" asp-route-id="@Model.Friend.FriendId">            
+                    Edit Friend
                 </a>
 
             </form>
