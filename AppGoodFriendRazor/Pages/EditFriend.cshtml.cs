@@ -63,6 +63,7 @@ namespace AppGoodFriendRazor.Pages
                 LastName = FriendIM.LastName,
                 Email = FriendIM.Email,
                 Birthday = FriendIM.Birthday,
+
                 AddressId = FriendIM.AddressId,
                 PetsId = FriendIM.Pets,
                 QuotesId = FriendIM.Quotes    
@@ -98,7 +99,6 @@ namespace AppGoodFriendRazor.Pages
             //Ids belonging to the related entities used for making sure they are carried along
             //with the updated friend
             public Guid AddressId { get; set; }
-
             public List<Guid> Pets { get; set; } = new List<Guid>();
 
             public List<Guid> Quotes { get; set; } = new List<Guid>(); 
@@ -113,8 +113,10 @@ namespace AppGoodFriendRazor.Pages
             [Required(ErrorMessage = "You must provide an email")]
             public string editEmail { get; set; }
 
-            [Required(ErrorMessage = "You must prove a birthday")]
+            [Required(ErrorMessage = "You must provide a birthday")]
             public DateTime? editBirthday { get; set; }
+
+            
 
             public IFriend UpdateModel(IFriend model)
             {
@@ -123,6 +125,7 @@ namespace AppGoodFriendRazor.Pages
                 model.LastName = this.LastName;
                 model.Email = this.Email;
                 model.Birthday = this.Birthday;
+
                 return model;
             }
 
@@ -166,35 +169,8 @@ namespace AppGoodFriendRazor.Pages
                 {
                     AddressId = original.AddressId;
                 }
-            }
-
-            public class csPetIM
-            {
-                public Guid PetId { get; set; }
-
-                public csPetIM() { }
-
-                public csPetIM(csPetIM original)
-                {
-                    PetId = original.PetId;
-                }
-            }
-
-            public class csQuoteIM
-            {
-                public Guid QuoteId { get; set; }
-
-                public csQuoteIM() { }
-
-                public csQuoteIM(csQuoteIM original)
-                {
-                    QuoteId = original.QuoteId;
-                }
-            }
+            }            
         }
-
-
         #endregion
     }
 }
-

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Models;
+using Models.DTO;
 using Services;
 using static AppGoodFriendRazor.Pages.EditFriendModel;
 
@@ -43,18 +44,25 @@ namespace AppGoodFriendRazor.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostEditAddress(Guid addressId)
+        public async Task<IActionResult> OnPostAsync()
         {
+            var addressCUdto = new csAddressCUdto
+            {
+                AddressId = AddressIM.AddressId,
+                StreetAddress = AddressIM.StreetAddress,
+                ZipCode = AddressIM.ZipCode,
+                City = AddressIM.City,
+                Country = AddressIM.Country
 
+            };
 
-            return Page();
+            await _friendsService.UpdateAddressAsync(null, addressCUdto);
+
+            return RedirectToPage("./ListOfFriends");
         }
-
-        public enum enStatusIM { Unknown, Unchanged, Inserted, Modified, Deleted }
 
         public class csAddressIM
         {
-            public enStatusIM StatusIM { get; set; }
 
             public Guid AddressId { get; set; }
             public string StreetAddress { get; set; }
@@ -82,7 +90,6 @@ namespace AppGoodFriendRazor.Pages
 
             public csAddressIM(csAddressIM original)
             {
-                StatusIM = original.StatusIM;
                 AddressId = original.AddressId;
                 StreetAddress = original.StreetAddress;
                 ZipCode = original.ZipCode;
@@ -96,7 +103,6 @@ namespace AppGoodFriendRazor.Pages
             }
             public csAddressIM(IAddress model)
             {
-                StatusIM = enStatusIM.Unchanged;
                 AddressId = model.AddressId;
                 StreetAddress = model.StreetAddress;
                 ZipCode = model.ZipCode;

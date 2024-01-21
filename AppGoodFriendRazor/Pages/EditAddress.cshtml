@@ -1,9 +1,9 @@
 ﻿@page "{id:guid}"
 @model AppGoodFriendRazor.Pages.EditAddressModel
 
-<!-- ... existing content ... -->
 
 <form class="needs-validation" method="post" novalidate>
+    <input type="hidden" asp-for="AddressIM.AddressId" />
     <div class="row g-3">
 
         <div class="col-12">

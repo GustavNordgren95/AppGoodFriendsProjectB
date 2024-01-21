@@ -1,70 +1,97 @@
-using DbContext;
+using DbModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.DTO;
 using Services;
+using static Npgsql.PostgresTypes.PostgresCompositeType;
 
-namespace AppGoodFriendRazor.Pages.Shared
+namespace AppGoodFriendRazor.Pages
 {
     public class AddQuoteModel : PageModel
     {
-        private readonly IFriendsService _friendsService;
-        private readonly ILogger<AddPetModel> _logger;
+        private readonly IFriendsService _friendsService = null;
+        private readonly ILogger<AddQuoteModel> _logger;
 
         public IFriend Friend { get; set; }
+
         public IQuote Quote { get; set; }
-        public List<IQuote> Quotes { get; set; }
+
+        [BindProperty]
+        public string PageHeader { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public Guid FriendId { get; set; }
+        public Guid Id { get; set; }
 
-        [BindProperty(SupportsGet = true)]
-        public Guid QuoteId { get; set; }
+        public List<IQuote> AvailableQuotes { get; set; }
 
-        public async Task<List<IQuote>> ReadAvailableQuotesAsync( Guid friendId, bool seeded, string filter, int pageNumber, int pageSize)
+        [BindProperty]
+        public Guid SelectedQuoteId { get; set; }
+
+        public AddQuoteModel(IFriendsService friendsService, ILogger<AddQuoteModel> logger)
         {
-            using (var db = csMainDbContext.DbContext(null))
-            {
-                filter ??= "";
-                var linkedQuoteIds = await db.Friends
-                                             .Where(f => f.FriendId == friendId)
-                                             .SelectMany(f => f.Quotes)
-                                             .Select(q => q.QuoteId)
-                                             .ToListAsync();
-
-                var _quotes = db.Quotes.AsNoTracking()
-                                       .Where(q => q.Seeded == seeded
-                                                   && !linkedQuoteIds.Contains(q.QuoteId)
-                                                   && (q.Quote.ToLower().Contains(filter) || q.Author.ToLower().Contains(filter)))
-                                       .Skip(pageNumber * pageSize)
-                                       .Take(pageSize);
-
-                return await _quotes.ToListAsync<IQuote>();
-            }
+            _friendsService = friendsService;
+            _logger = logger; // Logger is set here
         }
 
-
-
-        public async Task<IActionResult> OnPostSaveNewQuoteAsync(string quote, string author, Guid friendId, Guid? quoteId=null)
+        public async Task<IActionResult> OnGetAsync()
         {
-            if (string.IsNullOrWhiteSpace(quote) || string.IsNullOrWhiteSpace(author))
+            _logger.LogInformation("OnGetAsync called with Id: {Id}", Id);
+
+            if (Id == Guid.Empty)
             {
+                _logger.LogWarning("Id is empty");
+                return NotFound();
+            }
+
+            Friend = await _friendsService.ReadFriendAsync(null, Id, false);
+            if (Friend == null)
+            {
+                _logger.LogWarning("No friend found with Id: {Id}", Id);
+                return NotFound();
+            }
+
+            var allQuotes = await _friendsService.ReadQuotesAsync(null, true, false, "", int.MaxValue, int.MaxValue);
+            var friendQuoteIds = Friend.Quotes.Select(q => q.QuoteId).ToHashSet();
+
+            AvailableQuotes = allQuotes.Where(q => !friendQuoteIds.Contains(q.QuoteId)).ToList();
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            // Reload Friend from Database
+            Friend = await _friendsService.ReadFriendAsync(null, Id, false);
+
+            if (Friend == null)
+            {
+                _logger.LogWarning("No friend found with Id: {Id}", Id);
+                return NotFound();
+            }
+
+            // Check if the selected quote ID is valid and not already in the friend's list
+            if (SelectedQuoteId == Guid.Empty || Friend.Quotes.Any(q => q.QuoteId == SelectedQuoteId))
+            {
+                // Handle invalid selection or already existing quote
+                _logger.LogWarning("Invalid or duplicate QuoteId: {QuoteId}", SelectedQuoteId);
+                ModelState.AddModelError("", "Invalid or duplicate quote selection.");
                 return Page();
             }
 
-            if (quoteId == null || quoteId == Guid.Empty)
+            // Update the Friend by adding the selected quote ID
+            var dtoFriend = new csFriendCUdto(Friend);
+            if (dtoFriend.QuotesId == null)
             {
-                var newQuoteDto = new csQuoteCUdto
-                {
-                    Quote = quote,
-                    Author = author,
-                };
-                await _friendsService.CreateQuoteAsync(null, newQuoteDto);
+                dtoFriend.QuotesId = new List<Guid>();
             }
+            dtoFriend.QuotesId.Add(SelectedQuoteId);
+            Friend = await _friendsService.UpdateFriendAsync(null, dtoFriend);
 
-            return RedirectToPage(new { id = friendId });
+            // Redirect to a confirmation page or refresh the current page
+            return RedirectToPage("/FriendDetails", new { id = Id });
         }
+
+
     }
 }

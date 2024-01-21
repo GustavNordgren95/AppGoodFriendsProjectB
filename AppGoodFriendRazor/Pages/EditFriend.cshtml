@@ -33,15 +33,13 @@
 
         <div class="col-sm-6">
             <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" asp-for="FriendIM.Email">
+            <input type="email" class="form-control" id="email" asp-for="FriendIM.Email" required>
         </div>
 
         <div class="col-sm-6">
             <label for="birthday" class="form-label">Birthday</label>
-            <input type="date" class="form-control" id="birthday" asp-for="FriendIM.Birthday">
+            <input type="date" class="form-control" id="birthday" asp-for="FriendIM.Birthday" required>
         </div>
-     
-    </div>
 
     <button class="w-100 btn btn-primary btn-lg my-4" type="submit">Save</button>
 </form>

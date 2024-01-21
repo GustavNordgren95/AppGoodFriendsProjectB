@@ -1,16 +1,40 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Models;
+using Models.DTO;
+using Services;
+using static Npgsql.PostgresTypes.PostgresCompositeType;
 
 namespace AppGoodFriendRazor.Pages
 {
     public class EditQuoteModel : PageModel
     {
-        public void OnGet()
+        private readonly IFriendsService _friendsService;
+        public IQuote Quote { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public Guid FriendId { get; set; }
+
+        public EditQuoteModel(IFriendsService friendsService)
         {
+            _friendsService = friendsService;
         }
-        /*public async Task<IActionResult> OnPostUpdateQuoteAsync(Guid quoteId, string quote, string author, Guid friendId)
+
+        public async Task<IActionResult> OnGetAsync(Guid quoteId, Guid friendId)
         {
-            if (friendId == Guid.Empty)
+            Quote = await _friendsService.ReadQuoteAsync(null, quoteId, false);
+            if (Quote == null)
+            {
+                return NotFound();
+            }
+            FriendId = friendId;
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostUpdateQuoteAsync(Guid quoteId, string quoteText, string author)
+        {
+            if (!ModelState.IsValid)
             {
                 return Page();
             }
@@ -18,13 +42,13 @@ namespace AppGoodFriendRazor.Pages
             var quoteDto = new csQuoteCUdto
             {
                 QuoteId = quoteId,
-                Quote = quote,
-                Author = author,
-                // Other properties as needed
+                Quote = quoteText,
+                Author = author
             };
 
             await _friendsService.UpdateQuoteAsync(null, quoteDto);
-            return RedirectToPage(new { id = friendId });
-        }*/
+            return RedirectToPage("/FriendDetails", new { id = FriendId });
+        }
     }
+
 }
