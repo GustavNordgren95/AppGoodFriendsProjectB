@@ -1,0 +1,23 @@
+﻿@page
+@model AppGoodFriendRazor.Pages.EditQuoteModel
+
+<div class="container">
+    <h2>Edit Quote</h2>
+    <form id="editQuoteForm" method="post" asp-page-handler="UpdateQuote">
+        <input type="hidden" asp-for="FriendId" />
+        <input type="hidden" id="quoteId" name="quoteId" value="@Model.Quote.QuoteId" />
+
+        <div class="mb-3">
+            <label for="quoteText" class="form-label">Quote Text</label>
+            <textarea id="quoteText" name="quoteText" class="form-control">@Model.Quote.Quote</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="author" class="form-label">Author</label>
+            <input type="text" id="author" name="author" class="form-control" value="@Model.Quote.Author" />
+        </div>
+
+        <button type="submit" form="editQuoteForm" class="btn btn-primary">Save changes</button>
+    </form>
+</div>
+

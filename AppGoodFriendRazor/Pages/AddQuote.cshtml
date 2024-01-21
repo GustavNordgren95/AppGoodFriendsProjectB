@@ -1,0 +1,24 @@
+﻿@page
+@model AppGoodFriendRazor.Pages.AddQuoteModel
+
+<div class="container px-4 py-4" id="list-of-quotes">
+    <h2 class="pb-2 border-bottom">List of famous quotes</h2>
+
+    <p>Pick a famous quote.</p>
+    <form class="needs-validation" method="post" novalidate>
+        <div class="row mb-2 text-center">
+            <div class="col-md-10 themed-grid-col">
+                <label for="quoteId" class="form-label">Dropdown Single Select</label>
+                <select asp-for="SelectedQuoteId" class="form-select" id="quoteId">
+                    @foreach (var quote in Model.AvailableQuotes)
+                    {
+                        <option value="@quote.QuoteId">@quote.Quote - @quote.Author</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 themed-grid-col">
+                <button class="btn btn-success btn-sm" type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

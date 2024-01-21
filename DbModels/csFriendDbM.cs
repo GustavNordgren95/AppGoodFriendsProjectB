@@ -72,6 +72,7 @@ public class csFriendDbM : csFriend, ISeed<csFriendDbM>
         FirstName = org.FirstName;
         LastName = org.LastName;
         Birthday = org.Birthday;
+        Email = org.Email;
 
         return this;
     }

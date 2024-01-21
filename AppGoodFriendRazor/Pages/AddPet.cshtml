@@ -1,0 +1,49 @@
+﻿@page
+@model AppGoodFriendRazor.Pages.AddPetModel
+@{
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="addPetModalLabel">Add New Pet</h5>
+        </div>
+        <div class="modal-body">
+            <!-- Form for adding new pet details -->
+            <form id="addPetForm" method="post" asp-page-handler="SavePet">
+                <!-- FriendId should be included to associate the pet with the friend -->
+                <input type="hidden" id="friendId" name="friendId" value="@Model.Friend.FriendId" />
+                <div class="mb-3">
+                    <label for="addPetName" class="form-label">Pet Name</label>
+                    <input type="text" id="addPetName" name="petName" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label for="petKind" class="form-label">Pet Kind</label>
+                    <select id="petKind" name="petKind" class="form-control">
+                        <option value="Dog">Dog</option>
+                        <option value="Cat">Cat</option>
+                        <option value="Rabbit">Rabbit</option>
+                        <option value="Fish">Fish</option>
+                        <option value="Bird">Bird</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="petMood" class="form-label">Pet Mood</label>
+                    <select id="petMood" name="petMood" class="form-control">
+                        <option value="Happy">Happy</option>
+                        <option value="Hungry">Hungry</option>
+                        <option value="Lazy">Lazy</option>
+                        <option value="Sulky">Sulky</option>
+                        <option value="Buzy">Buzy</option>
+                        <option value="Sleepy">Sleepy</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" form="addPetForm" class="btn btn-primary">Add Pet</button>
+        </div>
+    </div>
+</div>
