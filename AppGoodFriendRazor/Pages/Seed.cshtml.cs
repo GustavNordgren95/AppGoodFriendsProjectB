@@ -38,7 +38,7 @@ namespace AppGoodFriendRazor.Pages
                 }
                 await _service.SeedAsync(null, NrOfItems);
 
-                return Redirect($"~/ListOfFriends");
+                return Redirect($"~/FriendsByCountry");
             }
             return Page();
         }

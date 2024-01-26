@@ -42,12 +42,16 @@ namespace AppGoodFriendRazor.Pages
             PageSize = pageSize;
             CurrentFilter = filter;
 
-            // Fetch all friends (consider optimizing this for large datasets)
             var allFriends = await _friendsService.ReadFriendsAsync(null, true, false, "", 0, int.MaxValue);
 
-            // Filter by city if a filter is provided
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (filter.Equals("unknown", StringComparison.OrdinalIgnoreCase))
             {
+                // Filter friends with unknown addresses
+                allFriends = allFriends.Where(friend => friend.Address == null).ToList();
+            }
+            else if (!string.IsNullOrWhiteSpace(filter))
+            {
+                // Filter by city if a filter is provided
                 allFriends = allFriends.Where(friend => friend.Address?.City?.Equals(filter, StringComparison.OrdinalIgnoreCase) == true).ToList();
             }
 
@@ -59,6 +63,7 @@ namespace AppGoodFriendRazor.Pages
 
             return Page();
         }
+
 
         #endregion
     }

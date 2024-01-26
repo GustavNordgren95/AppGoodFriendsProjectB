@@ -70,28 +70,28 @@ namespace AppGoodFriendRazor.Pages
 
             public Guid AddressId { get; set; }
 
-            [Required(ErrorMessage = "Street address is required")]
+            [Required(ErrorMessage = "You must provide a streetaddress")]
             public string StreetAddress { get; set; }
 
-            [Required(ErrorMessage = "Zip code is required")]
+            [Required(ErrorMessage = "You must provide a zip code")]
             public int ZipCode { get; set; }
 
-            [Required(ErrorMessage = "City is required")]
+            [Required(ErrorMessage = "You must provide a city")]
             public string City { get; set; }
 
-            [Required(ErrorMessage = "Country is required")]
+            [Required(ErrorMessage = "You must provide a country")]
             public string Country { get; set; }
 
-            [Required(ErrorMessage = "Street address is required")]
+            [Required(ErrorMessage = "You must provide a streetaddress")]
             public string editStreetAddress { get; set; }
 
-            [Required(ErrorMessage = "Zip code is required")]
+            [Required(ErrorMessage = "You must provide a zip code")]
             public int editZipCode { get; set; }
 
-            [Required(ErrorMessage = "City is required")]
+            [Required(ErrorMessage = "You must provide a city")]
             public string editCity { get; set; }
 
-            [Required(ErrorMessage = "Country is required")]
+            [Required(ErrorMessage = "You must provide a country")]
             public string editCountry { get; set; }
 
             public IAddress UpdateModel(IAddress model)

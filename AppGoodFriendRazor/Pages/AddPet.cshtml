@@ -38,8 +38,13 @@
                     </select>
                     <span asp-validation-for="PetIM.Mood" class="text-danger"></span>
                 </div>
+            <button type="submit" class="btn btn-primary">Add Pet</button>
             </form>
         </div>
-
-        <button type="submit" class="btn btn-primary">Add Pet</button>
 </div>
+
+@section script
+{
+    <!-- -->
+    <partial name="_ValidationScriptsPartial" />
+}

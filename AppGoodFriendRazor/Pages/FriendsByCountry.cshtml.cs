@@ -63,11 +63,8 @@ namespace AppGoodFriendRazor.Pages
 
             FriendsWithoutCountry = dbInfo.nrSeededFriends + dbInfo.nrUnseededFriends - dbInfo.nrFriendsWithAddress;
 
-
         }
     }
-
-
     public class FriendsByCountry
     {
         public string Country { get; set; }

@@ -30,12 +30,12 @@
 
                     <div class="col-sm-6">
                         <label for="birthday" class="form-label">Birthday</label>
-                        <input type="date" class="form-control" id="birthday" value=@Model.Friend.Birthday?.ToString("yyyy-MM-dd") ?? readonly "No birthday found">
+                        <input type="date" class="form-control" id="birthday" value=@Model.Friend.Birthday?.ToString("yyyy-MM-dd") readonly>
                     </div>
 
                     <div class="col-12">
                         <label for="address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="address" value="@Model.Friend.Address?.StreetAddress" ?? readonly>
+                        <input type="text" class="form-control" id="address" value="@Model.Friend.Address?.StreetAddress" readonly>
                     </div>
 
                     <div class="col-md-3">
@@ -52,14 +52,18 @@
                         <label for="country" class="form-label">Country</label>
                         <input type="text" class="form-control" id="country" value="@Model.Friend.Address?.Country" readonly>
                     </div>
+
                 </div>
 
                 <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditFriend" asp-route-id="@Model.Friend.FriendId">            
                     Edit Friend
                 </a>
-                <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditAddress" asp-route-id="@Model.Friend.Address.AddressId" asp-route-friendId="@Model.Friend.FriendId">
-                    Edit Address
-                </a>
+                @if (Model.Friend.Address != null)
+                {
+                    <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditAddress" asp-route-id="@Model.Friend.Address.AddressId" asp-route-friendId="@Model.Friend.FriendId">
+                        Edit Address
+                    </a>
+                }
 
             </form>
         </div>
