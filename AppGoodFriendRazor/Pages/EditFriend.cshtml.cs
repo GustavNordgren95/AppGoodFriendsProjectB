@@ -12,6 +12,7 @@ using Models;
 using static Npgsql.PostgresTypes.PostgresCompositeType;
 using System.Diagnostics.Metrics;
 using System.Reflection.Emit;
+using System.Diagnostics;
 
 namespace AppGoodFriendRazor.Pages
 {
@@ -56,6 +57,7 @@ namespace AppGoodFriendRazor.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+
             var friendCUdto = new csFriendCUdto
             {
                 FriendId = FriendIM.FriendId,
@@ -71,7 +73,6 @@ namespace AppGoodFriendRazor.Pages
 
             await _friendsService.UpdateFriendAsync(null, friendCUdto);
 
-            // Redirect to the FriendDetails page for the edited friend
             return RedirectToPage("./FriendDetails", new { id = FriendIM.FriendId });
         }
 

@@ -42,20 +42,24 @@ namespace AppGoodFriendRazor.Pages
             PageSize = pageSize;
             CurrentFilter = filter;
 
-            var info = await _friendsService.InfoAsync;
-            var totalFriendsCount = info.Db.nrSeededFriends;
-            TotalPages = (int)Math.Ceiling((double)totalFriendsCount / PageSize);
+            // Fetch all friends (consider optimizing this for large datasets)
+            var allFriends = await _friendsService.ReadFriendsAsync(null, true, false, "", 0, int.MaxValue);
 
-            Friends = await _friendsService.ReadFriendsAsync(null, true, false, filter?.Trim()?.ToLower(), CurrentPage - 1, pageSize);
-
-            if (!Friends.Any())
+            // Filter by city if a filter is provided
+            if (!string.IsNullOrWhiteSpace(filter))
             {
-                _logger.LogWarning("No friends were found in the database for the current page.");
-                Friends = new List<IFriend>();
+                allFriends = allFriends.Where(friend => friend.Address?.City?.Equals(filter, StringComparison.OrdinalIgnoreCase) == true).ToList();
             }
+
+            // Calculate total pages based on filtered results
+            TotalPages = (int)Math.Ceiling((double)allFriends.Count / PageSize);
+
+            // Apply paging to the filtered result
+            Friends = allFriends.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
 
             return Page();
         }
+
         #endregion
     }
 }

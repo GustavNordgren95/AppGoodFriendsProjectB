@@ -4,7 +4,6 @@
 }
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<!-- Page view-friend-detail -->
 <div class="container px-4 py-4" id="view-friend">
     <h2 class="pb-2 border-bottom">View details of a friend</h2>
     <p>Below you find all the details of my friend. You can also modify the pets my friend has and the quotes he/she likes.</p>
@@ -58,7 +57,7 @@
                 <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditFriend" asp-route-id="@Model.Friend.FriendId">            
                     Edit Friend
                 </a>
-                <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditAddress" asp-route-id="@Model.Friend.Address.AddressId">
+                <a class="w-100 btn btn-primary btn-lg my-4" asp-page="/EditAddress" asp-route-id="@Model.Friend.Address.AddressId" asp-route-friendId="@Model.Friend.FriendId">
                     Edit Address
                 </a>
 

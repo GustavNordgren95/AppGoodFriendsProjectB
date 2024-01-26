@@ -21,7 +21,6 @@ namespace AppGoodFriendRazor.Pages
 
         public async Task OnGetAsync(string country)
         {
-            // Guard clause to ensure country is not null or empty
             if (string.IsNullOrWhiteSpace(country))
             {
                 throw new ArgumentNullException(nameof(country));
@@ -30,7 +29,6 @@ namespace AppGoodFriendRazor.Pages
             Country = country;
             var info = await _repository.InfoAsync();
 
-            // Check if info or its properties are null and handle accordingly
             if (info == null || info.Friends == null || info.Pets == null)
             {
                 FriendsInCountry = new List<gstusrInfoFriendsDto>();

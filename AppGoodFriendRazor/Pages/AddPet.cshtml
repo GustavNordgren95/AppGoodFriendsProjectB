@@ -1,49 +1,45 @@
 ﻿@page
 @model AppGoodFriendRazor.Pages.AddPetModel
 @{
+    var animalKinds = Enum.GetValues(typeof(Models.enAnimalKind));
+    var animalMoods = Enum.GetValues(typeof(Models.enAnimalMood));
 }
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="addPetModalLabel">Add New Pet</h5>
-        </div>
-        <div class="modal-body">
-            <!-- Form for adding new pet details -->
+
+<div class="container px-4 py-4">
+            <h2 class="modal-title" id="addPetModalLabel">Add New Pet</h2>
+          <div class="mb-3">
             <form id="addPetForm" method="post" asp-page-handler="SavePet">
-                <!-- FriendId should be included to associate the pet with the friend -->
-                <input type="hidden" id="friendId" name="friendId" value="@Model.Friend.FriendId" />
-                <div class="mb-3">
-                    <label for="addPetName" class="form-label">Pet Name</label>
-                    <input type="text" id="addPetName" name="petName" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label for="petKind" class="form-label">Pet Kind</label>
-                    <select id="petKind" name="petKind" class="form-control">
-                        <option value="Dog">Dog</option>
-                        <option value="Cat">Cat</option>
-                        <option value="Rabbit">Rabbit</option>
-                        <option value="Fish">Fish</option>
-                        <option value="Bird">Bird</option>
-                    </select>
-                </div>
+                <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
-                    <label for="petMood" class="form-label">Pet Mood</label>
-                    <select id="petMood" name="petMood" class="form-control">
-                        <option value="Happy">Happy</option>
-                        <option value="Hungry">Hungry</option>
-                        <option value="Lazy">Lazy</option>
-                        <option value="Sulky">Sulky</option>
-                        <option value="Buzy">Buzy</option>
-                        <option value="Sleepy">Sleepy</option>
+                    <label for="PetIM_Name" class="form-label">Pet Name</label>
+                    <input type="text" asp-for="PetIM.Name" class="form-control" />
+                    <span asp-validation-for="PetIM.Name" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label for="PetIM_Kind" class="form-label">Pet Kind</label>
+                    <select asp-for="PetIM.Kind" class="form-control">
+                        @foreach (var kind in animalKinds)
+                        {
+                            <option value="@kind">@kind</option>
+                        }
                     </select>
+                    <span asp-validation-for="PetIM.Kind" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label for="PetInput_Mood" class="form-label">Pet Mood</label>
+                    <select asp-for="PetIM.Mood" class="form-control">
+                        @foreach (var mood in animalMoods)
+                        {
+                            <option value="@mood">@mood</option>
+                        }
+                    </select>
+                    <span asp-validation-for="PetIM.Mood" class="text-danger"></span>
                 </div>
             </form>
         </div>
-        <div class="modal-footer">
-            <button type="submit" form="addPetForm" class="btn btn-primary">Add Pet</button>
-        </div>
-    </div>
+
+        <button type="submit" class="btn btn-primary">Add Pet</button>
 </div>

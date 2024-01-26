@@ -7,6 +7,8 @@
 <form class="needs-validation" method="post" novalidate>
     <input type="hidden" asp-for="FriendIM.FriendId" />
     <input type="hidden" asp-for="FriendIM.AddressId" />
+    <input asp-for="PageHeader" type="hidden" />
+
 
     <input type="hidden" name="petId" data-seido-selected-item-id-target />
     <input type="hidden" name="quoteId" data-seido-selected-item-id-target />
@@ -24,23 +26,32 @@
         <div class="col-sm-6">
             <label for="firstName" class="form-label">First name</label>
             <input type="text" class="form-control" id="firstName" asp-for="FriendIM.FirstName" required>
+            <span asp-validation-for="FriendIM.FirstName" class="text-danger"></span>
         </div>
 
         <div class="col-sm-6">
             <label for="lastName" class="form-label">Last name</label>
             <input type="text" class="form-control" id="lastName" asp-for="FriendIM.LastName" required>
+            <span asp-validation-for="FriendIM.LastName" class="text-danger"></span>
         </div>
 
         <div class="col-sm-6">
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" id="email" asp-for="FriendIM.Email" required>
+            <span asp-validation-for="FriendIM.Email" class="text-danger"></span>
         </div>
 
         <div class="col-sm-6">
             <label for="birthday" class="form-label">Birthday</label>
             <input type="date" class="form-control" id="birthday" asp-for="FriendIM.Birthday" required>
+            <span asp-validation-for="FriendIM.Birthday" class="text-danger"></span>
         </div>
 
     <button class="w-100 btn btn-primary btn-lg my-4" type="submit">Save</button>
 </form>
 
+@section script
+{
+    <!-- -->
+    <partial name="_ValidationScriptsPartial" />
+}

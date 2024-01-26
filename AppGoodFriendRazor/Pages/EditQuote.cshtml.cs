@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Models;
 using Models.DTO;
 using Services;
+using System.ComponentModel.DataAnnotations;
 using static Npgsql.PostgresTypes.PostgresCompositeType;
 
 namespace AppGoodFriendRazor.Pages
@@ -10,7 +11,9 @@ namespace AppGoodFriendRazor.Pages
     public class EditQuoteModel : PageModel
     {
         private readonly IFriendsService _friendsService;
-        public IQuote Quote { get; set; }
+
+        [BindProperty]
+        public QuoteInputModel QuoteIM { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public Guid FriendId { get; set; }
@@ -22,28 +25,30 @@ namespace AppGoodFriendRazor.Pages
 
         public async Task<IActionResult> OnGetAsync(Guid quoteId, Guid friendId)
         {
-            Quote = await _friendsService.ReadQuoteAsync(null, quoteId, false);
-            if (Quote == null)
+            var quote = await _friendsService.ReadQuoteAsync(null, quoteId, false);
+            if (quote == null)
             {
                 return NotFound();
             }
-            FriendId = friendId;
 
+            QuoteIM = new QuoteInputModel
+            {
+                QuoteId = quote.QuoteId,
+                Text = quote.Quote,
+                Author = quote.Author
+            };
+
+            FriendId = friendId;
             return Page();
         }
 
-        public async Task<IActionResult> OnPostUpdateQuoteAsync(Guid quoteId, string quoteText, string author)
+        public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
             var quoteDto = new csQuoteCUdto
             {
-                QuoteId = quoteId,
-                Quote = quoteText,
-                Author = author
+                QuoteId = QuoteIM.QuoteId,
+                Quote = QuoteIM.Text,
+                Author = QuoteIM.Author
             };
 
             await _friendsService.UpdateQuoteAsync(null, quoteDto);
@@ -51,4 +56,14 @@ namespace AppGoodFriendRazor.Pages
         }
     }
 
+    public class QuoteInputModel
+    {
+        public Guid QuoteId { get; set; }
+
+        [Required(ErrorMessage = "The quote text is required.")]
+        public string Text { get; set; }
+
+        [Required(ErrorMessage = "The author is required.")]
+        public string Author { get; set; }
+    }
 }

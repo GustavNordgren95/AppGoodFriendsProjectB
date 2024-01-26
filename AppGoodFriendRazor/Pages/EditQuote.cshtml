@@ -1,23 +1,31 @@
 ﻿@page
 @model AppGoodFriendRazor.Pages.EditQuoteModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@attribute [IgnoreAntiforgeryToken]
 
 <div class="container">
     <h2>Edit Quote</h2>
-    <form id="editQuoteForm" method="post" asp-page-handler="UpdateQuote">
+    <form id="editQuoteForm" method="post">
         <input type="hidden" asp-for="FriendId" />
-        <input type="hidden" id="quoteId" name="quoteId" value="@Model.Quote.QuoteId" />
+        <input type="hidden" asp-for="QuoteIM.QuoteId" />
 
         <div class="mb-3">
-            <label for="quoteText" class="form-label">Quote Text</label>
-            <textarea id="quoteText" name="quoteText" class="form-control">@Model.Quote.Quote</textarea>
+            <label for="QuoteIM_Text" class="form-label">Quote Text</label>
+            <textarea asp-for="QuoteIM.Text" class="form-control"></textarea>
+            <span asp-validation-for="QuoteIM.Text" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label for="author" class="form-label">Author</label>
-            <input type="text" id="author" name="author" class="form-control" value="@Model.Quote.Author" />
+            <label for="QuoteIM_Author" class="form-label">Author</label>
+            <input asp-for="QuoteIM.Author" class="form-control" />
+            <span asp-validation-for="QuoteIM.Author" class="text-danger"></span>
         </div>
 
         <button type="submit" form="editQuoteForm" class="btn btn-primary">Save changes</button>
     </form>
 </div>
+
+@section script {
+    <partial name="_ValidationScriptsPartial" />
+}
 

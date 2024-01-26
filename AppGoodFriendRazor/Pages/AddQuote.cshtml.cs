@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Models;
 using Models.DTO;
 using Services;
+using System.Linq;
 using static Npgsql.PostgresTypes.PostgresCompositeType;
 
 namespace AppGoodFriendRazor.Pages
@@ -23,6 +24,9 @@ namespace AppGoodFriendRazor.Pages
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
 
+        [BindProperty]
+        public csQuoteIM QuoteIM { get; set; }
+
         public List<IQuote> AvailableQuotes { get; set; }
 
         [BindProperty]
@@ -31,7 +35,7 @@ namespace AppGoodFriendRazor.Pages
         public AddQuoteModel(IFriendsService friendsService, ILogger<AddQuoteModel> logger)
         {
             _friendsService = friendsService;
-            _logger = logger; // Logger is set here
+            _logger = logger;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -61,37 +65,48 @@ namespace AppGoodFriendRazor.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Reload Friend from Database
-            Friend = await _friendsService.ReadFriendAsync(null, Id, false);
-
-            if (Friend == null)
+            try
             {
-                _logger.LogWarning("No friend found with Id: {Id}", Id);
-                return NotFound();
+                var friend = await _friendsService.ReadFriendAsync(null, Id, false);
+                if (friend == null)
+                {
+                    _logger.LogError($"No friend found with Id: {Id}");
+                    return NotFound($"No friend found with ID {Id}.");
+                }
+
+                var friendDto = new csFriendCUdto(friend)
+                {
+                    QuotesId = friend.Quotes?.Select(q => q.QuoteId).ToList() ?? new List<Guid>()
+                };
+
+                if (!friendDto.QuotesId.Contains(QuoteIM.SelectedQuoteId))
+                {
+                    friendDto.QuotesId.Add(QuoteIM.SelectedQuoteId);
+                }
+
+                var updatedFriend = await _friendsService.UpdateFriendAsync(null, friendDto);
+                if (updatedFriend != null)
+                {
+                    return RedirectToPage("/FriendDetails", new { id = Id });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to update the friend with new quote.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding quote to friend with ID {Id}", Id);
+                ModelState.AddModelError("", "An error occurred while adding the quote.");
             }
 
-            // Check if the selected quote ID is valid and not already in the friend's list
-            if (SelectedQuoteId == Guid.Empty || Friend.Quotes.Any(q => q.QuoteId == SelectedQuoteId))
-            {
-                // Handle invalid selection or already existing quote
-                _logger.LogWarning("Invalid or duplicate QuoteId: {QuoteId}", SelectedQuoteId);
-                ModelState.AddModelError("", "Invalid or duplicate quote selection.");
-                return Page();
-            }
-
-            // Update the Friend by adding the selected quote ID
-            var dtoFriend = new csFriendCUdto(Friend);
-            if (dtoFriend.QuotesId == null)
-            {
-                dtoFriend.QuotesId = new List<Guid>();
-            }
-            dtoFriend.QuotesId.Add(SelectedQuoteId);
-            Friend = await _friendsService.UpdateFriendAsync(null, dtoFriend);
-
-            // Redirect to a confirmation page or refresh the current page
-            return RedirectToPage("/FriendDetails", new { id = Id });
+            return Page();
         }
 
+        public class  csQuoteIM
+        {
+            public Guid SelectedQuoteId { get; set; }
 
+        }
     }
 }

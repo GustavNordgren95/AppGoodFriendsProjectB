@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Models;
 using Models.DTO;
 using Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppGoodFriendRazor.Pages
 {
@@ -12,13 +13,12 @@ namespace AppGoodFriendRazor.Pages
         private readonly ILogger<AddPetModel> _logger;
 
         public IFriend Friend { get; set; }
-        public IPet Pet { get; set; }
+
+        [BindProperty]
+        public csPetIM PetIM { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public Guid PetId { get; set; }
 
         public AddPetModel(IFriendsService friendsService, ILogger<AddPetModel> logger)
         {
@@ -39,41 +39,54 @@ namespace AppGoodFriendRazor.Pages
                 return NotFound();
             }
 
+            // Initialize your input model here if needed
+            PetIM = new csPetIM();
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostSavePetAsync(string petName, enAnimalKind petKind, enAnimalMood petMood, Guid friendId, Guid? petId = null)
+        public async Task<IActionResult> OnPostSavePetAsync()
         {
-            if (petId == null || petId == Guid.Empty)
+
+            var petDto = new csPetCUdto
             {
-                // Creating a new pet, note to self that the new id is created in the service and doesn't need to be created here
-                var newPetDto = new csPetCUdto
-                {
-                    Name = petName,
-                    Kind = petKind,
-                    Mood = petMood,
-                    FriendId = friendId
-                };
-                await _friendsService.CreatePetAsync(null, newPetDto);
+                Name = PetIM.Name,
+                Kind = PetIM.Kind,
+                Mood = PetIM.Mood,
+                FriendId = Id 
+            };
+
+            if (PetIM.PetId == null || PetIM.PetId == Guid.Empty)
+            {
+                // Create a new pet
+                await _friendsService.CreatePetAsync(null, petDto);
             }
             else
             {
-
-                var petDto = new csPetCUdto
-                {
-                    PetId = petId.Value,
-                    Name = petName,
-                    Kind = petKind,
-                    Mood = petMood,
-                    FriendId = friendId
-                };
+                // Update an existing pet
+                petDto.PetId = PetIM.PetId.Value;
                 await _friendsService.UpdatePetAsync(null, petDto);
             }
 
-            return RedirectToPage("/FriendDetails", new { id = friendId });
+            return RedirectToPage("/FriendDetails", new { id = Id });
         }
 
+        public class csPetIM
+        {
+            public Guid? PetId { get; set; } // Nullable for the case of adding new pets
 
+            [Required]
+            [Display(Name = "Pet Name")]
+            public string Name { get; set; }
+
+            [Required]
+            [Display(Name = "Pet Kind")]
+            public enAnimalKind Kind { get; set; }
+
+            [Required]
+            [Display(Name = "Pet Mood")]
+            public enAnimalMood Mood { get; set; }
+        }
     }
-
 }
+

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Models;
 using Models.DTO;
 using Services;
+using System.ComponentModel.DataAnnotations;
 using static AppGoodFriendRazor.Pages.EditFriendModel;
 
 namespace AppGoodFriendRazor.Pages
@@ -20,6 +21,9 @@ namespace AppGoodFriendRazor.Pages
 
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public Guid FriendId { get; set; }
 
         public EditAddressModel(IFriendsService friendsService, ILogger<EditAddressModel> logger)
         {
@@ -58,21 +62,36 @@ namespace AppGoodFriendRazor.Pages
 
             await _friendsService.UpdateAddressAsync(null, addressCUdto);
 
-            return RedirectToPage("./ListOfFriends");
+            return RedirectToPage("/FriendDetails", new { id = FriendId });
         }
 
         public class csAddressIM
         {
 
             public Guid AddressId { get; set; }
+
+            [Required(ErrorMessage = "Street address is required")]
             public string StreetAddress { get; set; }
+
+            [Required(ErrorMessage = "Zip code is required")]
             public int ZipCode { get; set; }
+
+            [Required(ErrorMessage = "City is required")]
             public string City { get; set; }
+
+            [Required(ErrorMessage = "Country is required")]
             public string Country { get; set; }
 
+            [Required(ErrorMessage = "Street address is required")]
             public string editStreetAddress { get; set; }
+
+            [Required(ErrorMessage = "Zip code is required")]
             public int editZipCode { get; set; }
+
+            [Required(ErrorMessage = "City is required")]
             public string editCity { get; set; }
+
+            [Required(ErrorMessage = "Country is required")]
             public string editCountry { get; set; }
 
             public IAddress UpdateModel(IAddress model)

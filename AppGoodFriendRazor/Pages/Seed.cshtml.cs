@@ -11,7 +11,6 @@ namespace AppGoodFriendRazor.Pages
 {
     public class SeedModel : PageModel
     {
-        //Just like for WebApi
         IFriendsService _service = null;
         ILogger<SeedModel> _logger = null;
 
@@ -44,7 +43,6 @@ namespace AppGoodFriendRazor.Pages
             return Page();
         }
 
-        //Inject services just like in WebApi
         public SeedModel(IFriendsService service, ILogger<SeedModel> logger)
         {
             _service = service;

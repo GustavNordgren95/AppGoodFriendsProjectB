@@ -11,38 +11,47 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <!-- Form for editing pet details -->
-            <form id="editPetForm" method="post" asp-page-handler="UpdatePet">
-                <input type="hidden" id="friendId" name="friendId" value="@Model.Pet.Friend.FriendId" />
-                <input type="hidden" id="petId" name="petId" value="@Model.Pet.PetId" />
+            <form id="editPetForm" method="post">
+                <input type="hidden" asp-for="PetIM.PetId" />
+                <input type="hidden" asp-for="PetIM.FriendId" />
+
                 <div class="mb-3">
                     <label for="petName" class="form-label">Pet Name</label>
-                    <input type="text" id="petName" name="petName" class="form-control" value="@Model.Pet.Name" />
+                    <input type="text" asp-for="PetIM.Name" class="form-control" value="@Model.PetIM.Name" />
+                    <span asp-validation-for="PetIM.Name" class="text-danger"></span>
                 </div>
+
                 <div class="mb-3">
                     <label for="petKind" class="form-label">Pet Kind</label>
-                    <select id="petKind" name="petKind" class="form-control">
+                    <select asp-for="PetIM.Kind" class="form-control">
                         @foreach (var kind in animalKinds)
                         {
                             <option value="@kind">@kind</option>
                         }
                     </select>
+                    <span asp-validation-for="PetIM.Kind" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label for="petMood" class="form-label">Pet Mood</label>
-                    <select id="petMood" name="petMood" class="form-control">
+                    <select asp-for="PetIM.Mood" class="form-control">
                         @foreach (var mood in animalMoods)
                         {
                             <option value="@mood">@mood</option>
                         }
                     </select>
+                    <span asp-validation-for="PetIM.Mood" class="text-danger"></span>
                 </div>
 
+                <button type="submit" class="btn btn-primary">Save changes</button>
             </form>
-        </div>
-        <div class="modal-footer">
-            <button type="submit" form="editPetForm" class="btn btn-primary">Save changes</button>
+
         </div>
     </div>
 </div>
+
+@section script
+{
+    <!-- -->
+    <partial name="_ValidationScriptsPartial" />
+}

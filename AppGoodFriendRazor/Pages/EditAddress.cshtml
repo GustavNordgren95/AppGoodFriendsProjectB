@@ -9,35 +9,33 @@
         <div class="col-12">
             <label for="address" class="form-label">Address</label>
             <input type="text" class="form-control" id="address" asp-for="AddressIM.StreetAddress" required>
-            <div class="invalid-feedback">
-                Please enter a street address.
-            </div>
+            <span asp-validation-for="AddressIM.StreetAddress" class="text-danger"></span>
         </div>
 
         <div class="col-md-3">
             <label for="zip" class="form-label">Zip</label>
             <input type="text" class="form-control" id="zip" asp-for="AddressIM.ZipCode" required>
-            <div class="invalid-feedback">
-                Please enter a zip code.
-            </div>
+            <span asp-validation-for="AddressIM.ZipCode" class="text-danger"></span>
         </div>
 
         <div class="col-md-4">
             <label for="city" class="form-label">City</label>
             <input type="text" class="form-control" id="city" asp-for="AddressIM.City" required>
-            <div class="invalid-feedback">
-                Please enter a city.
-            </div>
+            <span asp-validation-for="AddressIM.City" class="text-danger"></span>
         </div>
 
         <div class="col-md-5">
             <label for="country" class="form-label">Country</label>
             <input type="text" class="form-control" id="country" asp-for="AddressIM.Country" required>
-            <div class="invalid-feedback">
-                Please enter a country.
-            </div>
+            <span asp-validation-for="AddressIM.Country" class="text-danger"></span>
         </div>
     </div>
 
     <button class="w-100 btn btn-primary btn-lg my-4" type="submit">Save</button>
 </form>
+
+@section script
+{
+    <!-- -->
+    <partial name="_ValidationScriptsPartial" />
+}
