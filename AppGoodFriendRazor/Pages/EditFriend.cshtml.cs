@@ -66,7 +66,7 @@ namespace AppGoodFriendRazor.Pages
                 Email = FriendIM.Email,
                 Birthday = FriendIM.Birthday,
 
-                AddressId = FriendIM.AddressId,
+                AddressId = FriendIM.AddressId != Guid.Empty ? FriendIM.AddressId : null,
                 PetsId = FriendIM.Pets,
                 QuotesId = FriendIM.Quotes    
             };
@@ -99,7 +99,7 @@ namespace AppGoodFriendRazor.Pages
 
             //Ids belonging to the related entities used for making sure they are carried along
             //with the updated friend
-            public Guid AddressId { get; set; }
+            public Guid? AddressId { get; set; }
             public List<Guid> Pets { get; set; } = new List<Guid>();
 
             public List<Guid> Quotes { get; set; } = new List<Guid>(); 
@@ -154,7 +154,7 @@ namespace AppGoodFriendRazor.Pages
                 Email = model.Email;
                 Birthday = model.Birthday;
 
-                AddressId = model.Address.AddressId;
+                AddressId = model.Address != null ? model.Address.AddressId : (Guid?)null;
 
                 Pets = model.Pets.Select(x => x.PetId).ToList();
                 Quotes = model.Quotes.Select(x => x.QuoteId).ToList();

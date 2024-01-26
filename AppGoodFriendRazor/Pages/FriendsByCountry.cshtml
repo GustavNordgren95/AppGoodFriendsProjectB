@@ -20,12 +20,12 @@
                 {
                     <a asp-page="/ListOfFriends" asp-route-filter="unknown" class="text-decoration-none">
                         <!-- Your card content for Unknown Country -->
-                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('./img/unsplash-photo-3.jpg');">
+                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg">
                             <!-- Card details -->
                             <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                                <h3 class="pt-1 mt-1 mb-4 display-6 lh-1 fw-bold">Unknown Address</h3>
+                                <h3 class="pt-1 mt-1 mb-4 display-6 lh-1 fw-bold">Unknown</h3>
                                 <ul>
-                                    <li>Friends without a country: @Model.FriendsWithoutCountry</li>
+                                    <li>Friends without an address: @Model.FriendsWithoutCountry</li>
                                 </ul>
                             </div>
                         </div>
@@ -34,7 +34,7 @@
                 else
                 {
                     <a href="#friends-in-a-country" class="text-decoration-none">
-                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('./img/unsplash-photo-3.jpg');">
+                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg">
                             <!-- Card details for other countries -->
                             <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
                                 <h3 class="pt-1 mt-1 mb-4 display-6 lh-1 fw-bold">
